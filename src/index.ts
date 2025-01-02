@@ -1,6 +1,6 @@
 import WebSocket, { WebSocketServer } from 'ws';
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 5228 });
 
 wss.on('connection', (ws) => {
   ws.send('Welcome to the game');

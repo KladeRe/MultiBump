@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  socketserver:
+    restart: always
+    container_name: bumpy_server
+    image: bumpy_server
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - "5228:5228"
+    volumes:
+      - ./src:/app
