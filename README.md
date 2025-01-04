@@ -5,4 +5,8 @@ A real time multiplayer game based in browser using the websocket protocol
 
 The architecture is based on a client-server architecture, with one server connecting multiple clients using websocket connections between the server and clients
 
+## Technologies
+
+The frontend is written with React JS and PixiJS. The backend is written using Node JS.
+
 
