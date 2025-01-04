@@ -1,10 +1,25 @@
 import './App.css';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 
 import { BlurFilter, TextStyle } from 'pixi.js';
 import { Stage, Container, Sprite, Text } from '@pixi/react';
 
+import useWebSocket from 'react-use-websocket';
+
 const App = () => {
+  const { lastMessage } = useWebSocket('ws://localhost:5228', {
+    onOpen: () => console.log('Connected to WebSocket'),
+    onClose: () => console.log('Disconnected from WebSocket'),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    shouldReconnect: (closeEvent) => true,
+  });
+
+  useEffect(() => {
+    if (lastMessage) {
+      const data = JSON.parse(lastMessage.data);
+      console.log('Received:', data);
+    }
+  }, [lastMessage]);
   const blurFilter = useMemo(() => new BlurFilter(2), []);
   const bunnyUrl = 'https://pixijs.io/pixi-react/img/bunny.png';
   return (

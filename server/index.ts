@@ -9,6 +9,7 @@ interface Coordinates {
 wss.on('connection', (ws) => {
   ws.on('message', (message: string) => {
     try {
+      console.log(message)
       const coordinates: Coordinates = JSON.parse(message);
       if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number') {
         wss.clients.forEach((client) => {
