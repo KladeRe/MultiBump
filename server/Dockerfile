@@ -1,5 +1,5 @@
 # Uses alpine image small memory footprint
-FROM node:20-alpine
+FROM node:alpine
 
 # Creates working directory inside the container
 WORKDIR /usr/local/app
