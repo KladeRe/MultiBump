@@ -24,3 +24,12 @@ services:
       - "4367:4367"
     volumes:
       - ./client:/usr/local/client
+
+  nginx:
+    restart: always
+    container_name: bumpy_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "7978:80"
