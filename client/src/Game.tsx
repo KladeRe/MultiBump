@@ -29,6 +29,8 @@ const Game = () => {
         isDragging.current = true;
         initialMousePos.current = { x: mouseX, y: mouseY };
       }
+
+      setLineEnd({ x: playerX, y: playerY });
     };
 
     const handleMouseUp = (event: MouseEvent) => {
@@ -48,6 +50,18 @@ const Game = () => {
       }
     };
 
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isDragging.current) {
+        const stageElement = document.querySelector('canvas');
+        const boundingRect = stageElement?.getBoundingClientRect();
+        const mouseX = event.clientX - (boundingRect?.left ?? 0);
+        const mouseY = event.clientY - (boundingRect?.top ?? 0);
+        setLineEnd({ x: playerX + (playerX-mouseX), y: playerY + (playerY-mouseY) });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
     const stageElement = document.querySelector('canvas');
     stageElement?.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
@@ -56,6 +70,7 @@ const Game = () => {
     return () => {
       stageElement?.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [playerX, playerY]);
 
@@ -82,9 +97,25 @@ const Game = () => {
 
     return () => clearInterval(interval);
   }, [velocityX, velocityY]);
+  useEffect(() => {
 
+  }, []);
+
+  const [lineEnd, setLineEnd] = useState({ x: playerX, y: playerY });
   return (
     <Stage width={screenWidth} height={screenHeight} options={{ background: 0x1099bb }}>
+      { isDragging.current &&
+      <Graphics
+        draw={(g) => {
+          g.clear();
+          // Draw the line
+          g.lineStyle(2, 0x000000);
+          g.moveTo(playerX, playerY);
+          g.lineTo(lineEnd.x, lineEnd.y);
+
+        }}
+      />
+      }
       <Graphics
         draw={(g) => {
           g.clear();
