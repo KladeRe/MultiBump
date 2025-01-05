@@ -3,8 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Graphics } from '@pixi/react';
 
 const Game = () => {
-  const [rectX, setRectX] = useState(100);
-  const [rectY, setRectY] = useState(100);
+  const [playerX, setplayerX] = useState(500);
+
+  const [playerY, setplayerY] = useState(500);
   const [velocityX, setVelocityX] = useState(0);
   const [velocityY, setVelocityY] = useState(0);
   const initialMousePos = useRef({ x: 0, y: 0 });
@@ -12,31 +13,19 @@ const Game = () => {
 
   const screenWidth = 1000;
   const screenHeight = 800;
-  const playerWidth = 25;
+  const playerRadius = 25;
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') {
-        setRectX((prevX) => Math.min(prevX + 10, screenWidth - playerWidth));
-      } else if (event.key === 'ArrowLeft') {
-        setRectX((prevX) => Math.max(prevX - 10, playerWidth));
-      } else if (event.key === 'ArrowUp') {
-        setRectY((prevY) => Math.max(prevY - 10, playerWidth));
-      } else if (event.key === 'ArrowDown') {
-        setRectY((prevY) => Math.min(prevY + 10, screenHeight - playerWidth));
-      }
-    };
-
     const handleMouseDown = (event: MouseEvent) => {
       const stageElement = event.currentTarget as HTMLElement;
       const boundingRect = stageElement.getBoundingClientRect();
       const mouseX = event.clientX - boundingRect.left;
       const mouseY = event.clientY - boundingRect.top;
-      const dx = mouseX - rectX;
-      const dy = mouseY - rectY;
+      const dx = mouseX - playerX;
+      const dy = mouseY - playerY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < playerWidth) {
+      if (distance < playerRadius) {
         isDragging.current = true;
         initialMousePos.current = { x: mouseX, y: mouseY };
       }
@@ -59,22 +48,31 @@ const Game = () => {
 
     const stageElement = document.querySelector('canvas');
     stageElement?.addEventListener('mousedown', handleMouseDown);
-
     stageElement?.addEventListener('mouseup', handleMouseUp);
 
-    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
       stageElement?.removeEventListener('mousedown', handleMouseDown);
       stageElement?.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [rectX, rectY]);
+  }, [playerX, playerY]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRectX((prevX) => Math.min(Math.max(prevX + velocityX, playerWidth), screenWidth - playerWidth));
-      setRectY((prevY) => Math.min(Math.max(prevY + velocityY, playerWidth), screenHeight - playerWidth));
+      setplayerX((prevX) => {
+        const nextX = prevX + velocityX;
+        if (nextX <= playerRadius || nextX >= screenWidth - playerRadius) {
+          setVelocityX(velocityX * -0.8); // Bounce with 80% energy retention
+        }
+        return Math.min(Math.max(nextX, playerRadius), screenWidth - playerRadius);
+      });
+      setplayerY((prevY) => {
+        const nextY = prevY + velocityY;
+        if (nextY <= playerRadius || nextY >= screenHeight - playerRadius) {
+          setVelocityY(velocityY * -0.8); // Bounce with 80% energy retention
+        }
+        return Math.min(Math.max(nextY, playerRadius), screenHeight - playerRadius);
+      });
       setVelocityX((prevVx) => prevVx * 0.95); // Apply friction
       setVelocityY((prevVy) => prevVy * 0.95); // Apply friction
 
@@ -89,7 +87,7 @@ const Game = () => {
         draw={(g) => {
           g.clear();
           g.beginFill(0xff0000);
-          g.drawCircle(rectX, rectY, playerWidth);
+          g.drawCircle(playerX, playerY, playerRadius);
           g.endFill();
         }}
       />

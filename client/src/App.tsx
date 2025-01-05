@@ -9,7 +9,7 @@ const App = () => {
     onOpen: () => console.log('Connected to WebSocket'),
     onClose: () => console.log('Disconnected from WebSocket'),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    shouldReconnect: (closeEvent) => true,
+    shouldReconnect: (closeEvent: CloseEvent) => true,
   });
 
   useEffect(() => {
