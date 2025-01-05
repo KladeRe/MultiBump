@@ -2,18 +2,38 @@ import { Stage } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
 import { Graphics } from '@pixi/react';
 
+import useWebSocket from 'react-use-websocket';
+
+
 const Game = () => {
   const [playerX, setplayerX] = useState(500);
-
   const [playerY, setplayerY] = useState(500);
+
   const [velocityX, setVelocityX] = useState(0);
   const [velocityY, setVelocityY] = useState(0);
+
+  const [lineEnd, setLineEnd] = useState({ x: playerX, y: playerY });
+
   const initialMousePos = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
 
   const screenWidth = 1000;
   const screenHeight = 800;
   const playerRadius = 25;
+
+  const { sendMessage, lastMessage } = useWebSocket('/api', {
+    onOpen: () => console.log('Connected to WebSocket'),
+    onClose: () => console.log('Disconnected from WebSocket'),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    shouldReconnect: (closeEvent: CloseEvent) => true,
+  });
+
+  useEffect(() => {
+    if (lastMessage) {
+      const data = JSON.parse(lastMessage.data);
+      console.log('Received:', data);
+    }
+  }, [lastMessage]);
 
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
@@ -93,15 +113,14 @@ const Game = () => {
       setVelocityX((prevVx) => prevVx * 0.95); // Apply friction
       setVelocityY((prevVy) => prevVy * 0.95); // Apply friction
 
+      sendMessage(JSON.stringify({ x: screenWidth - playerX, y: screenHeight - playerY }));
+
     }, 16);
 
     return () => clearInterval(interval);
   }, [velocityX, velocityY]);
-  useEffect(() => {
 
-  }, []);
 
-  const [lineEnd, setLineEnd] = useState({ x: playerX, y: playerY });
   return (
     <Stage width={screenWidth} height={screenHeight} options={{ background: 0x1099bb }}>
       { isDragging.current &&
