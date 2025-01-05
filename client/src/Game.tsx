@@ -32,28 +32,30 @@ const Game = () => {
     };
 
     const handleMouseUp = (event: MouseEvent) => {
+
       if (isDragging.current) {
-        const stageElement = event.currentTarget as HTMLElement;
-        const boundingRect = stageElement.getBoundingClientRect();
-        const mouseX = event.clientX - boundingRect.left;
-        const mouseY = event.clientY - boundingRect.top;
+        const stageElement = document.querySelector('canvas');
+        const boundingRect = stageElement?.getBoundingClientRect();
+        const mouseX = event.clientX - (boundingRect?.left ?? 0);
+        const mouseY = event.clientY - (boundingRect?.top ?? 0);
+
         const dx = mouseX - initialMousePos.current.x;
         const dy = mouseY - initialMousePos.current.y;
 
-        setVelocityX(dx * -0.9); // Adjust the multiplier to control the speed
-        setVelocityY(dy * -0.9); // Adjust the multiplier to control the speed
+        setVelocityX(dx * -0.7); // Adjust the multiplier to control the speed
+        setVelocityY(dy * -0.7); // Adjust the multiplier to control the speed
         isDragging.current = false;
       }
     };
 
     const stageElement = document.querySelector('canvas');
     stageElement?.addEventListener('mousedown', handleMouseDown);
-    stageElement?.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mouseup', handleMouseUp);
 
 
     return () => {
       stageElement?.removeEventListener('mousedown', handleMouseDown);
-      stageElement?.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [playerX, playerY]);
 
