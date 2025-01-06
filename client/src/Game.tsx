@@ -1,6 +1,5 @@
-import { Stage } from '@pixi/react';
+import { Stage, Graphics } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
-import { Graphics } from '@pixi/react';
 
 const Game = () => {
 
@@ -24,6 +23,18 @@ const Game = () => {
   useEffect(() => {
     worker.current = new Worker(new URL('./socket-worker.ts', import.meta.url));
     worker.current.postMessage({ type: 'connect', payload: '/api' });
+    worker.current.onmessage = (event) => {
+      const { type, payload } = event.data;
+      if (type === 'connected') {
+        console.log('WebSocket connected');
+      } else if (type === 'message') {
+        console.log('Received message:', payload);
+      } else if (type === 'disconnected') {
+        console.log('WebSocket disconnected');
+      } else if (type === 'error') {
+        console.error('WebSocket error:', payload);
+      }
+    };
 
     return () => {
       worker.current?.postMessage({ type: 'close' });
