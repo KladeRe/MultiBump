@@ -2,9 +2,15 @@ import { Stage, Graphics } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
 
 const Game = () => {
+  const screenWidth = 1000;
+  const screenHeight = 800;
+  const playerRadius = 25;
 
-  const [playerX, setplayerX] = useState(500);
-  const [playerY, setplayerY] = useState(500);
+  const [playerX, setplayerX] = useState(screenWidth / 2);
+  const [playerY, setplayerY] = useState((screenHeight * 3) / 4);
+
+  const [opponentX, setOpponentX] = useState(screenWidth / 2);
+  const [opponentY, setOpponentY] = useState(screenHeight / 4);
 
   const [velocityX, setVelocityX] = useState(0);
   const [velocityY, setVelocityY] = useState(0);
@@ -13,10 +19,6 @@ const Game = () => {
 
   const initialMousePos = useRef({ x: 0, y: 0 });
   const isDragging = useRef(false);
-
-  const screenWidth = 1000;
-  const screenHeight = 800;
-  const playerRadius = 25;
 
   const worker = useRef<Worker | null>(null);
 
@@ -29,6 +31,9 @@ const Game = () => {
         console.log('WebSocket connected');
       } else if (type === 'message') {
         console.log('Received message:', payload);
+        const wsMessage = JSON.parse(payload);
+        setOpponentX(wsMessage.x)
+        setOpponentY(wsMessage.y)
       } else if (type === 'disconnected') {
         console.log('WebSocket disconnected');
       } else if (type === 'error') {
@@ -61,7 +66,6 @@ const Game = () => {
     };
 
     const handleMouseUp = (event: MouseEvent) => {
-
       if (isDragging.current) {
         const stageElement = document.querySelector('canvas');
         const boundingRect = stageElement?.getBoundingClientRect();
@@ -88,11 +92,9 @@ const Game = () => {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-
     const stageElement = document.querySelector('canvas');
     stageElement?.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
-
 
     return () => {
       stageElement?.removeEventListener('mousedown', handleMouseDown);
@@ -117,8 +119,8 @@ const Game = () => {
         }
         return Math.min(Math.max(nextY, playerRadius), screenHeight - playerRadius);
       });
-      setVelocityX((prevVx) => prevVx * 0.95); // Apply friction
-      setVelocityY((prevVy) => prevVy * 0.95); // Apply friction
+      setVelocityX((prevVx) => prevVx * 0.9); // Apply friction
+      setVelocityY((prevVy) => prevVy * 0.9); // Apply friction
       // Only send if position changed significantly
       const positionThreshold = 1;
       if (Math.abs(velocityX) > positionThreshold || Math.abs(velocityY) > positionThreshold) {
@@ -128,8 +130,6 @@ const Game = () => {
 
     return () => clearInterval(interval);
   }, [playerX, playerY, velocityX, velocityY]);
-
-
 
   return (
     <Stage width={screenWidth} height={screenHeight} options={{ background: 0x1099bb }}>
@@ -150,6 +150,8 @@ const Game = () => {
           g.clear();
           g.beginFill(0xff0000);
           g.drawCircle(playerX, playerY, playerRadius);
+          g.beginFill(0x006400);
+          g.drawCircle(opponentX, opponentY, playerRadius);
           g.endFill();
         }}
       />
