@@ -2,10 +2,8 @@ import { Stage } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
 import { Graphics } from '@pixi/react';
 
-import useWebSocket from 'react-use-websocket';
-
-
 const Game = () => {
+
   const [playerX, setplayerX] = useState(500);
   const [playerY, setplayerY] = useState(500);
 
@@ -21,19 +19,17 @@ const Game = () => {
   const screenHeight = 800;
   const playerRadius = 25;
 
-  const { sendMessage, lastMessage } = useWebSocket('/api', {
-    onOpen: () => console.log('Connected to WebSocket'),
-    onClose: () => console.log('Disconnected from WebSocket'),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    shouldReconnect: (closeEvent: CloseEvent) => true,
-  });
+  const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
-    if (lastMessage) {
-      const data = JSON.parse(lastMessage.data);
-      console.log('Received:', data);
-    }
-  }, [lastMessage]);
+    worker.current = new Worker(new URL('./socket-worker.ts', import.meta.url));
+    worker.current.postMessage({ type: 'connect', payload: '/api' });
+
+    return () => {
+      worker.current?.postMessage({ type: 'close' });
+      worker.current?.terminate();
+    };
+  }, []);
 
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
@@ -112,13 +108,16 @@ const Game = () => {
       });
       setVelocityX((prevVx) => prevVx * 0.95); // Apply friction
       setVelocityY((prevVy) => prevVy * 0.95); // Apply friction
-
-      sendMessage(JSON.stringify({ x: screenWidth - playerX, y: screenHeight - playerY }));
-
+      // Only send if position changed significantly
+      const positionThreshold = 1;
+      if (Math.abs(velocityX) > positionThreshold || Math.abs(velocityY) > positionThreshold) {
+        worker.current?.postMessage({ type: 'send', payload: { x: screenWidth - playerX, y: screenHeight - playerY } });
+      }
     }, 16);
 
     return () => clearInterval(interval);
-  }, [velocityX, velocityY]);
+  }, [playerX, playerY, velocityX, velocityY]);
+
 
 
   return (
