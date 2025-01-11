@@ -27,6 +27,8 @@ const Game = () => {
   const initialMousePos = useRef<Coordinates2D>({ x: 0, y: 0 });
   const isDragging = useRef<boolean>(false);
 
+  const [lastActive, setLastActive] = useState<Date>(new Date());
+
   const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
@@ -41,6 +43,7 @@ const Game = () => {
         const wsMessage = JSON.parse(payload);
         if (wsMessage.x && wsMessage.y) {
           setOpponentPosition((prev) => ({ x: wsMessage.x, y: wsMessage.y, dx: prev?.dx ?? 0, dy: prev?.dy ?? 0 }));
+          setLastActive(new Date());
         }
       } else if (type === 'disconnected') {
         console.log('WebSocket disconnected');
@@ -125,13 +128,17 @@ const Game = () => {
           dy: nextDy*0.9,
         }
       })
-
-      worker.current?.postMessage({ type: 'send', payload: { x: playArea.x - playerPosition.x, y:  playArea.y - playerPosition.y } });
-
+      if ((Math.abs(playerPosition.dx) > 1 || Math.abs(playerPosition.dy) > 1) || (1 === 1)) {
+        worker.current?.postMessage({ type: 'send', payload: { x: playArea.x - playerPosition.x, y:  playArea.y - playerPosition.y } });
+        const now = new Date();
+        if (now.getTime() - lastActive.getTime() > 3000) {
+          setOpponentPosition(null);
+        }
+      }
     }, 16);
 
     return () => clearInterval(interval);
-  }, [playArea.x, playArea.y, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
+  }, [lastActive, playArea.x, playArea.y, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
 
   return (
     <Stage width={playArea.x} height={playArea.y} options={{ background: 0x1099bb }}>
