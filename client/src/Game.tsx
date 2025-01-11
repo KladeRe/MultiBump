@@ -15,11 +15,12 @@ interface PlayerInfo {
 
 const Game = () => {
 
-  const [playArea] = useState<Coordinates2D>({x: 1000, y: 800})
+  const [playArea] = useState<Coordinates2D>({x: 1000, y: 800});
   const playerRadius = 25;
 
-  const [playerPosition, setPlayerPosition] = useState<PlayerInfo>({x: playArea.x / 2, y: (playArea.y * 3) / 4, dx: 0, dy: 0})
-  const [opponentPosition, setOpponentPosition] = useState<PlayerInfo>({x: playArea.x / 2, y: playArea.y / 4, dx: 0, dy: 0})
+  const [playerPosition, setPlayerPosition] = useState<PlayerInfo>({x: playArea.x / 2, y: (playArea.y * 3) / 4, dx: 0, dy: 0});
+
+  const [opponentPosition, setOpponentPosition] = useState<PlayerInfo | null>(null);
 
   const [lineEnd, setLineEnd] = useState({ x: playerPosition.x, y: playerPosition.y });
 
@@ -39,7 +40,7 @@ const Game = () => {
         console.log('Received message:', payload);
         const wsMessage = JSON.parse(payload);
         if (wsMessage.x && wsMessage.y) {
-          setOpponentPosition((prev) => ({ ...prev, dx: wsMessage.dx, dy: wsMessage.dy }));
+          setOpponentPosition((prev) => ({ x: wsMessage.x, y: wsMessage.y, dx: prev?.dx ?? 0, dy: prev?.dy ?? 0 }));
         }
       } else if (type === 'disconnected') {
         console.log('WebSocket disconnected');
@@ -125,9 +126,8 @@ const Game = () => {
         }
       })
 
-      if (Math.abs(playerPosition.dx) > 1 || Math.abs(playerPosition.dy) > 1) {
-        worker.current?.postMessage({ type: 'send', payload: { x: playArea.x - playerPosition.x, y:  playArea.y - playerPosition.y } });
-      }
+      worker.current?.postMessage({ type: 'send', payload: { x: playArea.x - playerPosition.x, y:  playArea.y - playerPosition.y } });
+
     }, 16);
 
     return () => clearInterval(interval);
@@ -152,8 +152,10 @@ const Game = () => {
           g.clear();
           g.beginFill(0xff0000);
           g.drawCircle(playerPosition.x, playerPosition.y, playerRadius);
-          g.beginFill(0x006400);
-          g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
+          if (opponentPosition) {
+            g.beginFill(0x006400);
+            g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
+          }
           g.endFill();
         }}
       />
