@@ -2,23 +2,25 @@ import { Stage, Graphics } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
 
 const Game = () => {
-  const screenWidth = 1000;
-  const screenHeight = 800;
+
+  const [screenWidth] = useState<number>(window.innerWidth);
+  const [screenHeight] = useState<number>(window.innerHeight);
+
   const playerRadius = 25;
 
-  const [playerX, setplayerX] = useState(screenWidth / 2);
-  const [playerY, setplayerY] = useState((screenHeight * 3) / 4);
+  const [playerX, setPlayerX] = useState<number>(screenWidth / 2);
+  const [playerY, setPlayerY] = useState<number>((screenHeight * 3) / 4);
 
-  const [opponentX, setOpponentX] = useState(screenWidth / 2);
-  const [opponentY, setOpponentY] = useState(screenHeight / 4);
+  const [opponentX, setOpponentX] = useState<number>(screenWidth / 2);
+  const [opponentY, setOpponentY] = useState<number>(screenHeight / 4);
 
-  const [velocityX, setVelocityX] = useState(0);
-  const [velocityY, setVelocityY] = useState(0);
+  const [velocityX, setVelocityX] = useState<number>(0);
+  const [velocityY, setVelocityY] = useState<number>(0);
 
   const [lineEnd, setLineEnd] = useState({ x: playerX, y: playerY });
 
   const initialMousePos = useRef({ x: 0, y: 0 });
-  const isDragging = useRef(false);
+  const isDragging = useRef<boolean>(false);
 
   const worker = useRef<Worker | null>(null);
 
@@ -32,8 +34,10 @@ const Game = () => {
       } else if (type === 'message') {
         console.log('Received message:', payload);
         const wsMessage = JSON.parse(payload);
-        setOpponentX(wsMessage.x)
-        setOpponentY(wsMessage.y)
+        if (wsMessage.x && wsMessage.y) {
+          setOpponentX(wsMessage.x);
+          setOpponentY(wsMessage.y);
+        }
       } else if (type === 'disconnected') {
         console.log('WebSocket disconnected');
       } else if (type === 'error') {
@@ -105,14 +109,14 @@ const Game = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setplayerX((prevX) => {
+      setPlayerX((prevX) => {
         const nextX = prevX + velocityX;
         if (nextX <= playerRadius || nextX >= screenWidth - playerRadius) {
           setVelocityX(velocityX * -0.8); // Bounce with 80% energy retention
         }
         return Math.min(Math.max(nextX, playerRadius), screenWidth - playerRadius);
       });
-      setplayerY((prevY) => {
+      setPlayerY((prevY) => {
         const nextY = prevY + velocityY;
         if (nextY <= playerRadius || nextY >= screenHeight - playerRadius) {
           setVelocityY(velocityY * -0.8); // Bounce with 80% energy retention
@@ -129,7 +133,7 @@ const Game = () => {
     }, 16);
 
     return () => clearInterval(interval);
-  }, [playerX, playerY, velocityX, velocityY]);
+  }, [playerX, playerY, screenHeight, screenWidth, velocityX, velocityY]);
 
   return (
     <Stage width={screenWidth} height={screenHeight} options={{ background: 0x1099bb }}>
