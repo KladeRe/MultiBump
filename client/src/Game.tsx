@@ -1,25 +1,29 @@
 import { Stage, Graphics } from '@pixi/react';
 import { useState, useEffect, useRef } from 'react';
 
+interface Coordinates2D {
+  x: number;
+  y: number;
+}
+
+interface PlayerInfo {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}
+
 const Game = () => {
 
-  const [screenWidth] = useState<number>(window.innerWidth);
-  const [screenHeight] = useState<number>(window.innerHeight);
-
+  const [playArea] = useState<Coordinates2D>({x: 1000, y: 800})
   const playerRadius = 25;
 
-  const [playerX, setPlayerX] = useState<number>(screenWidth / 2);
-  const [playerY, setPlayerY] = useState<number>((screenHeight * 3) / 4);
+  const [playerPosition, setPlayerPosition] = useState<PlayerInfo>({x: playArea.x / 2, y: (playArea.y * 3) / 4, dx: 0, dy: 0})
+  const [opponentPosition, setOpponentPosition] = useState<PlayerInfo>({x: playArea.x / 2, y: playArea.y / 4, dx: 0, dy: 0})
 
-  const [opponentX, setOpponentX] = useState<number>(screenWidth / 2);
-  const [opponentY, setOpponentY] = useState<number>(screenHeight / 4);
+  const [lineEnd, setLineEnd] = useState({ x: playerPosition.x, y: playerPosition.y });
 
-  const [velocityX, setVelocityX] = useState<number>(0);
-  const [velocityY, setVelocityY] = useState<number>(0);
-
-  const [lineEnd, setLineEnd] = useState({ x: playerX, y: playerY });
-
-  const initialMousePos = useRef({ x: 0, y: 0 });
+  const initialMousePos = useRef<Coordinates2D>({ x: 0, y: 0 });
   const isDragging = useRef<boolean>(false);
 
   const worker = useRef<Worker | null>(null);
@@ -35,8 +39,7 @@ const Game = () => {
         console.log('Received message:', payload);
         const wsMessage = JSON.parse(payload);
         if (wsMessage.x && wsMessage.y) {
-          setOpponentX(wsMessage.x);
-          setOpponentY(wsMessage.y);
+          setOpponentPosition((prev) => ({ ...prev, dx: wsMessage.dx, dy: wsMessage.dy }));
         }
       } else if (type === 'disconnected') {
         console.log('WebSocket disconnected');
@@ -57,8 +60,8 @@ const Game = () => {
       const boundingRect = stageElement.getBoundingClientRect();
       const mouseX = event.clientX - boundingRect.left;
       const mouseY = event.clientY - boundingRect.top;
-      const dx = mouseX - playerX;
-      const dy = mouseY - playerY;
+      const dx = mouseX - playerPosition.x;
+      const dy = mouseY - playerPosition.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (distance < playerRadius) {
@@ -66,7 +69,7 @@ const Game = () => {
         initialMousePos.current = { x: mouseX, y: mouseY };
       }
 
-      setLineEnd({ x: playerX, y: playerY });
+      setLineEnd({ x: playerPosition.x, y: playerPosition.y });
     };
 
     const handleMouseUp = (event: MouseEvent) => {
@@ -79,8 +82,7 @@ const Game = () => {
         const dx = mouseX - initialMousePos.current.x;
         const dy = mouseY - initialMousePos.current.y;
 
-        setVelocityX(dx * -0.7); // Adjust the multiplier to control the speed
-        setVelocityY(dy * -0.7); // Adjust the multiplier to control the speed
+        setPlayerPosition((prev) => ({...prev, dx: dx*-0.7, dy: dy*-0.7}))
         isDragging.current = false;
       }
     };
@@ -91,7 +93,7 @@ const Game = () => {
         const boundingRect = stageElement?.getBoundingClientRect();
         const mouseX = event.clientX - (boundingRect?.left ?? 0);
         const mouseY = event.clientY - (boundingRect?.top ?? 0);
-        setLineEnd({ x: playerX + (playerX-mouseX), y: playerY + (playerY-mouseY) });
+        setLineEnd({ x: playerPosition.x + (playerPosition.x-mouseX), y: playerPosition.y + (playerPosition.y-mouseY) });
       }
     };
 
@@ -105,45 +107,41 @@ const Game = () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [playerX, playerY]);
+  }, [playerPosition]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPlayerX((prevX) => {
-        const nextX = prevX + velocityX;
-        if (nextX <= playerRadius || nextX >= screenWidth - playerRadius) {
-          setVelocityX(velocityX * -0.8); // Bounce with 80% energy retention
+      setPlayerPosition((prev) => {
+        const nextX = prev.x + prev.dx;
+        const nextY = prev.y + prev.dy;
+        const nextDx = (nextX <= playerRadius || nextX >= playArea.x - playerRadius) ? prev.dx*-0.8 : prev.dx;
+        const nextDy = (nextY <= playerRadius || nextY >= playArea.y - playerRadius) ? prev.dy*-0.8 : prev.dy;
+
+        return {
+          x: Math.min(Math.max(nextX, playerRadius), playArea.x - playerRadius),
+          y: Math.min(Math.max(nextY, playerRadius), playArea.y - playerRadius),
+          dx: nextDx*0.9,
+          dy: nextDy*0.9,
         }
-        return Math.min(Math.max(nextX, playerRadius), screenWidth - playerRadius);
-      });
-      setPlayerY((prevY) => {
-        const nextY = prevY + velocityY;
-        if (nextY <= playerRadius || nextY >= screenHeight - playerRadius) {
-          setVelocityY(velocityY * -0.8); // Bounce with 80% energy retention
-        }
-        return Math.min(Math.max(nextY, playerRadius), screenHeight - playerRadius);
-      });
-      setVelocityX((prevVx) => prevVx * 0.9); // Apply friction
-      setVelocityY((prevVy) => prevVy * 0.9); // Apply friction
-      // Only send if position changed significantly
-      const positionThreshold = 1;
-      if (Math.abs(velocityX) > positionThreshold || Math.abs(velocityY) > positionThreshold) {
-        worker.current?.postMessage({ type: 'send', payload: { x: screenWidth - playerX, y: screenHeight - playerY } });
+      })
+
+      if (Math.abs(playerPosition.dx) > 1 || Math.abs(playerPosition.dy) > 1) {
+        worker.current?.postMessage({ type: 'send', payload: { x: playArea.x - playerPosition.x, y:  playArea.y - playerPosition.y } });
       }
     }, 16);
 
     return () => clearInterval(interval);
-  }, [playerX, playerY, screenHeight, screenWidth, velocityX, velocityY]);
+  }, [playArea.x, playArea.y, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
 
   return (
-    <Stage width={screenWidth} height={screenHeight} options={{ background: 0x1099bb }}>
+    <Stage width={playArea.x} height={playArea.y} options={{ background: 0x1099bb }}>
       { isDragging.current &&
       <Graphics
         draw={(g) => {
           g.clear();
           // Draw the line
           g.lineStyle(2, 0x000000);
-          g.moveTo(playerX, playerY);
+          g.moveTo(playerPosition.x, playerPosition.y);
           g.lineTo(lineEnd.x, lineEnd.y);
 
         }}
@@ -153,9 +151,9 @@ const Game = () => {
         draw={(g) => {
           g.clear();
           g.beginFill(0xff0000);
-          g.drawCircle(playerX, playerY, playerRadius);
+          g.drawCircle(playerPosition.x, playerPosition.y, playerRadius);
           g.beginFill(0x006400);
-          g.drawCircle(opponentX, opponentY, playerRadius);
+          g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
           g.endFill();
         }}
       />
