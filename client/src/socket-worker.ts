@@ -1,4 +1,3 @@
-// Define message types for communication between worker and main thread
 interface Position {
   x: number,
   y: number
@@ -27,16 +26,20 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
         throw new Error('Invalid payload: expected Position object');
       }
       console.log("Sending message")
-      sendMessage(payload);
+      if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.send(JSON.stringify(payload));
+      }
       break;
     case 'close':
-      closeConnection();
+      if (websocket) {
+        websocket.close();
+      }
       break;
   }
 };
 
 // Connect to WebSocket server
-function connect(url: string) {
+const connect = (url: string) => {
   try {
     websocket = new WebSocket(url);
 
@@ -58,19 +61,5 @@ function connect(url: string) {
     };
   } catch (error) {
     self.postMessage({ type: 'error', payload: error });
-  }
-}
-
-// Send message to server
-function sendMessage(data: Position) {
-  if (websocket && websocket.readyState === WebSocket.OPEN) {
-    websocket.send(JSON.stringify(data));
-  }
-}
-
-// Close WebSocket connection
-function closeConnection() {
-  if (websocket) {
-    websocket.close();
   }
 }
