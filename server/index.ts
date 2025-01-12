@@ -28,12 +28,13 @@ wss.on('connection', (ws) => {
         }
         rooms[room].add(ws);
         currentRoom = room;
-      } else if (currentRoom) {
+        ws.send(JSON.stringify({ type: 'joined', room }));
+      } else if (data.type === 'position' && currentRoom) {
         const coordinates: Coordinates = JSON.parse(message);
         if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number') {
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(coordinates));
+              client.send(JSON.stringify({ type: 'coordinates', payload: coordinates }));
             }
           });
         } else {
