@@ -59,6 +59,10 @@ const connect = (url: string) => {
       const { type, payload } = JSON.parse(event.data);
       if (type === 'coordinates') {
         self.postMessage({ type: 'message', payload: payload });
+      } else if (type === 'joined') {
+        self.postMessage({ type: 'message', payload: 'Joined room' });
+      } else if (type === 'error') {
+        console.error('Error occurred');
       }
 
     };
