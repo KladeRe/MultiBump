@@ -56,7 +56,11 @@ const connect = (url: string) => {
     };
 
     websocket.onmessage = (event) => {
-      self.postMessage({ type: 'message', payload: event.data });
+      const { type, payload } = JSON.parse(event.data);
+      if (type === 'coordinates') {
+        self.postMessage({ type: 'message', payload: payload });
+      }
+
     };
 
     websocket.onerror = (error) => {

@@ -15,7 +15,7 @@ wss.on('connection', (ws) => {
         if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number') {
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(coordinates));
+              client.send(JSON.stringify({ type: 'coordinates', payload: coordinates }));
             }
           });
 
@@ -24,6 +24,7 @@ wss.on('connection', (ws) => {
         }
       } else if (data.type == 'join') {
         const room = data.payload;
+        ws.send(JSON.stringify({ type: 'joined', payload: room}));
       }
 
     } catch (e) {

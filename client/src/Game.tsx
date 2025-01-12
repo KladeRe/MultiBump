@@ -50,7 +50,7 @@ const Game = () => {
         console.log("WebSocket connected");
       } else if (type === "message") {
         console.log("Received message:", payload);
-        const wsMessage = JSON.parse(payload);
+        const wsMessage = payload;
         if (wsMessage.x && wsMessage.y) {
           setOpponentPosition((prev) => ({
             x: wsMessage.x,
