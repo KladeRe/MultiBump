@@ -4,7 +4,7 @@ interface Position {
 }
 
 type WorkerMessage = {
-  type: 'connect' | 'send' | 'close';
+  type: 'connect' | 'send' | 'close' | 'join';
   payload?: Position | string;
 };
 
@@ -17,17 +17,22 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   switch (type) {
     case 'connect':
       if (typeof payload !== 'string') {
-        throw new Error('Invalid payload: Expected string type')
+        throw new Error('Invalid payload: Expected string type');
       }
       connect(payload);
       break;
     case 'send':
       if (typeof payload !== 'object' || !('x' in payload) || !('y' in payload)) {
-        throw new Error('Invalid payload: expected Position object');
+        throw new Error('Invalid payload: Expected Position object');
       }
       console.log("Sending message")
       if (websocket && websocket.readyState === WebSocket.OPEN) {
         websocket.send(JSON.stringify(payload));
+      }
+      break;
+    case 'join':
+      if (typeof payload !== 'string') {
+        throw new Error('Invalid payload: Expected string type');
       }
       break;
     case 'close':

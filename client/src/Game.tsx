@@ -43,6 +43,7 @@ const Game = () => {
   useEffect(() => {
     worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
     worker.current.postMessage({ type: "connect", payload: "/api" });
+    worker.current.postMessage({ type: "join", payload: "testing"})
     worker.current.onmessage = (event) => {
       const { type, payload } = event.data;
       if (type === "connected") {
