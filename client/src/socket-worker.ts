@@ -27,12 +27,15 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       }
       console.log("Sending message")
       if (websocket && websocket.readyState === WebSocket.OPEN) {
-        websocket.send(JSON.stringify(payload));
+        websocket.send(JSON.stringify({ type: 'position', payload: payload}));
       }
       break;
     case 'join':
       if (typeof payload !== 'string') {
         throw new Error('Invalid payload: Expected string type');
+      }
+      if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.send(JSON.stringify({ type: 'join', payload: payload}));
       }
       break;
     case 'close':
