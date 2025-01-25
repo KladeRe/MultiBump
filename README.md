@@ -5,12 +5,15 @@ The current implementation is designed with two players in mind, however, the cu
 
 ## Architecture
 
-The architecture is based on one server connecting multiple clients using websocket connections between the server and clients. All communication between client is done
-via the backend server.
+The architecture is based on one server connecting multiple clients using websocket connections between the server and clients. All communication between client is done via the backend server.
+
+![Architecture diagram](assets/Architecture.jpg)
+
+*Diagram of the current architecture*
 
 ## Technologies
 
-The frontend is written with React JS and PixiJS. The backend is written using Node JS. Both the frontend and backend use reverse proxies which are configuerd using nginx.
+The frontend is written with React JS and PixiJS, allowing a moderately deep level of modification of graphics. The backend is written using Node JS. Both the frontend and backend use reverse proxies which are configured using Nginx.
 
 To achieve respectable levels of performance, the communication from the frontend to the backend is handled by a web worker. The worker connects to the backend server via Websocket and handles bidirectional communication between the frontend and the backend.
 
@@ -23,10 +26,10 @@ docker compose up
 
 The current implementation doesn't need any environment variables.
 
+Docker compose will need to be installed for this to work. Installation instructions can be found here: https://docs.docker.com/compose/install/
+
 ## Progress and plan
 
 Currently the core functionality is complete. Meaning that players are able to see each other move and move themselves in real time.
 
 The current user experience is quite plain and would work well with more content. More features can be expected in the future.
-
-
