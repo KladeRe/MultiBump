@@ -1,39 +1,34 @@
 # Multibump
 An over-engineered real-time browser multiplayer game. The players bump into each other and other things in an attempt to reach the goal first.
 
-The current implementation is designed with two players in mind, however, the current implementation allows more players at the same time.
+The current implementation is designed with two players in mind, however, it allows more players at the same time.
 
-## Architecture
+## Dependencies
 
-The architecture is based on one server connecting multiple clients using websocket connections between the server and clients. All communication between client is done via the backend server.
-
-![Architecture diagram](assets/Architecture.jpg)
-
-*Diagram of the current architecture*
-
-## Technologies
-
-The frontend is written with React JS and PixiJS, allowing a moderately deep level of modification of graphics. The backend is written using Node JS. Both the frontend and backend use reverse proxies which are configured using Nginx.
-
-To achieve respectable levels of performance, the communication from the frontend to the backend is handled by a web worker. The worker connects to the backend server via Websocket and handles bidirectional communication between the frontend and the backend.
+Docker Compose needs to be installed for a local setup to work. Installation instructions can be found here: [Docker Compose Installation](https://docs.docker.com/compose/install/)
 
 ## Running the app
 
-The app can be run using docker compose with the command:
-```
+The app can be run using Docker Compose with the command:
+```bash
 docker compose up
 ```
 
+The app should be visible by going to the URL at [http://localhost:7978](http://localhost:7978)
+
 The current implementation doesn't need any environment variables.
 
-Docker compose will need to be installed for this to work. Installation instructions can be found here: https://docs.docker.com/compose/install/
+## Architecture, technologies, and project status
 
-## Rooms feature
+For more details about the project, check out these links:
+- [Overall architecture](/docs/architecture.md)
+- [Programming languages](/docs/technologies.md)
+- [Project status](/docs/status.md)
 
-Players can join different rooms by specifying the 'room' parameter in the URL. This adds a certain level of security for each game. Currently only 2 people can be in one game.
+## Contributing
 
-## Progress and plan
+Contributions are welcome, however, do note that this is a hobby project, so please don't expect fast response times!
 
-Currently the core functionality is complete. Meaning that players are able to see each other move and move themselves in real time.
+## License
 
-The current user experience is quite plain and would work well with more content. More features can be expected in the future.
+This project is licensed under the GPLv3 License. See the [LICENSE](/LICENSE) file for details.
