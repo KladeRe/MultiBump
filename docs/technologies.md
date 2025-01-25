@@ -2,17 +2,13 @@
 
 ## Frontend
 
-### ReactJS + Typescript
+### ReactJS + Typescript + Vite
 
-The frontend is written using ReactJS. React was chosen for its popularity and because of the original contributors familiarity with the framework. Typescript was chosen for improving the maintainability of the project if its size increses considerably.
+The frontend is written using ReactJS. React was chosen for its popularity and because of the original contributors familiarity with the framework. Typescript was chosen for improving the maintainability of the project if its size increses considerably. Vite is the chosen build tool for the frontend, allowing fast build times and the possibility of using vitest for frontend testing.
 
 ### PixiJS
 
 PixiJS was chosen as the graphics framework. The framework was chosen for its high level of customizability and the easy integration with ReactJS.
-
-### Vite
-
-Vite is the chosen build tool for the frontend, allowing fast build times and the possibility of using vitest for frontend testing.
 
 ### ESLint
 
