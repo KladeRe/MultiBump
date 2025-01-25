@@ -20,6 +20,7 @@ wss.on('connection', (ws) => {
       if (data.type == 'position') {
         const coordinates: Coordinates = data.payload;
         if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number') {
+
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify({ type: 'coordinates', payload: coordinates }));
@@ -41,14 +42,6 @@ wss.on('connection', (ws) => {
 
     } catch (e) {
       ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format' }));
-    }
-  });
-  ws.on('close', () => {
-    if (currentRoom && rooms[currentRoom]) {
-      rooms[currentRoom].delete(ws);
-      if (rooms[currentRoom].size === 0) {
-        delete rooms[currentRoom];
-      }
     }
   });
   ws.on('close', () => {
