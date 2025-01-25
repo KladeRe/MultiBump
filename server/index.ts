@@ -32,6 +32,10 @@ wss.on('connection', (ws) => {
         }
       } else if (data.type == 'join') {
         const room = data.payload;
+        if (rooms[room] && rooms[room].size >= 2) {
+          ws.send(JSON.stringify({ type: 'error', payload: 'Room is full' }));
+          return;
+        }
         if (!rooms[room]) {
           rooms[room] = new Set();
         }
@@ -41,7 +45,8 @@ wss.on('connection', (ws) => {
       }
 
     } catch (e) {
-      ws.send(JSON.stringify({ type: 'error', payload: e }));
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+      ws.send(JSON.stringify({ type: 'error', payload: errorMessage }));
     }
   });
   ws.on('close', () => {

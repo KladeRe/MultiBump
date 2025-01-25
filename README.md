@@ -28,6 +28,10 @@ The current implementation doesn't need any environment variables.
 
 Docker compose will need to be installed for this to work. Installation instructions can be found here: https://docs.docker.com/compose/install/
 
+## Rooms feature
+
+Players can join different rooms by specifying the 'room' parameter in the URL. This adds a certain level of security for each game. Currently only 2 people can be in one game.
+
 ## Progress and plan
 
 Currently the core functionality is complete. Meaning that players are able to see each other move and move themselves in real time.
