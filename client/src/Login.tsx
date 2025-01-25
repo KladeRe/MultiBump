@@ -1,25 +1,28 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from './Login.module.css';
 
 const Login = () => {
   const [roomCode, setRoomCode] = useState('');
+  const navigate = useNavigate();
 
   const handleJoin = () => {
-    if (roomCode.trim()) {
-      console.log(roomCode);
+    if (roomCode.trim().length > 0) {
+      navigate(`/game?room=${roomCode}`);
     }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+    <div className={styles.container}>
       <h1>Join a Room</h1>
       <input
         type="text"
         value={roomCode}
         onChange={(e) => setRoomCode(e.target.value)}
         placeholder="Enter room code"
-        style={{ padding: '10px', fontSize: '16px', marginBottom: '10px' }}
+        className={styles.input}
       />
-      <button onClick={handleJoin} style={{ padding: '10px 20px', fontSize: '16px' }}>
+      <button onClick={handleJoin} className={styles.button}>
         Join Room
       </button>
     </div>
