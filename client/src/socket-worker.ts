@@ -9,7 +9,6 @@ type WorkerMessage = {
 };
 
 let websocket: WebSocket | null = null;
-let currentRoom: string | null = null;
 
 // Handle messages from the main thread
 self.onmessage = (event: MessageEvent<WorkerMessage>) => {
@@ -21,15 +20,6 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
         throw new Error('Invalid payload: Expected string type');
       }
       connect(payload);
-      break;
-    case 'join':
-      if (typeof payload !== 'string') {
-        throw new Error('Invalid payload: Expected string type');
-      }
-      currentRoom = payload;
-      if (websocket && websocket.readyState === WebSocket.OPEN) {
-        websocket.send(JSON.stringify({ type: 'join', room: currentRoom }));
-      }
       break;
     case 'send':
       if (typeof payload !== 'object' || !('x' in payload) || !('y' in payload)) {
@@ -63,9 +53,6 @@ const connect = (url: string) => {
 
     websocket.onopen = () => {
       self.postMessage({ type: 'connected' });
-      if (currentRoom) {
-        websocket?.send(JSON.stringify({ type: 'join', room: currentRoom}));
-      }
     };
 
     websocket.onmessage = (event) => {
@@ -85,7 +72,7 @@ const connect = (url: string) => {
     };
 
     websocket.onclose = () => {
-      console.log('Websocket disconnected');
+      self.postMessage({ type: 'disconnected' });
       websocket = null;
     };
   } catch (error) {
