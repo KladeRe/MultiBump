@@ -2,9 +2,9 @@
 
 ## Frontend
 
-### ReactJS
+### ReactJS + Typescript
 
-The frontend is written using ReactJS. React was chosen for its popularity and because of the original contributors familiarity with the framework.
+The frontend is written using ReactJS. React was chosen for its popularity and because of the original contributors familiarity with the framework. Typescript was chosen for improving the maintainability of the project if its size increses considerably.
 
 ### PixiJS
 
