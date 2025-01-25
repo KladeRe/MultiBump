@@ -39,22 +39,24 @@ const Game = () => {
   const [lastActive, setLastActive] = useState<Date>(new Date());
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
+  const intervalCounter = useRef<number>(0);
+
   const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const roomId = params.get('room') || 'testing';
+    const roomId = params.get("room") || "testing";
     worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
     const connectToWebSocket = async () => {
       await new Promise<void>((resolve) => {
         const onConnect = (event: MessageEvent) => {
-          if (event.data.type === 'connected') {
-            worker.current?.removeEventListener('message', onConnect);
+          if (event.data.type === "connected") {
+            worker.current?.removeEventListener("message", onConnect);
             setIsConnected(true);
             resolve();
           }
         };
-        worker.current?.addEventListener('message', onConnect);
+        worker.current?.addEventListener("message", onConnect);
         worker.current?.postMessage({ type: "connect", payload: "/api" });
       });
 
@@ -82,7 +84,7 @@ const Game = () => {
       } else if (type === "disconnected") {
         console.log("WebSocket disconnected");
       } else if (type === "error") {
-        console.error("WebSocket error:", payload);
+        console.log("WebSocket error:", payload);
       }
     };
 
@@ -175,20 +177,23 @@ const Game = () => {
           dy: nextDy * 0.9,
         };
       });
+
+      intervalCounter.current += 1;
+
       if (
-        Math.abs(playerPosition.dx) >= 1 ||
-        Math.abs(playerPosition.dy) >= 1 ||
-        1 === 1
+        isConnected &&
+        worker.current &&
+        (Math.abs(playerPosition.dx) >= 0.4 ||
+          Math.abs(playerPosition.dy) >= 0.4 ||
+          intervalCounter.current % 20 == 0)
       ) {
-        if (isConnected && worker.current) {
-          worker.current.postMessage({
-            type: "send",
-            payload: {
-              x: playArea.x - playerPosition.x,
-              y: playArea.y - playerPosition.y,
-            },
-          });
-        }
+        worker.current.postMessage({
+          type: "send",
+          payload: {
+            x: playArea.x - playerPosition.x,
+            y: playArea.y - playerPosition.y,
+          },
+        });
 
         const now = new Date();
         if (now.getTime() - lastActive.getTime() > 3000) {
@@ -199,8 +204,17 @@ const Game = () => {
 
     return () => {
       clearInterval(interval);
-    }
-  }, [isConnected, lastActive, playArea.x, playArea.y, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
+    };
+  }, [
+    isConnected,
+    lastActive,
+    playArea.x,
+    playArea.y,
+    playerPosition.dx,
+    playerPosition.dy,
+    playerPosition.x,
+    playerPosition.y,
+  ]);
 
   return (
     <Stage
