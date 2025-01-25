@@ -37,15 +37,32 @@ const Game = () => {
   const isDragging = useRef<boolean>(false);
 
   const [lastActive, setLastActive] = useState<Date>(new Date());
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
-    // const params = new URLSearchParams(window.location.search);
-    // const roomId = params.get('room') || 'testing';
+    const params = new URLSearchParams(window.location.search);
+    const roomId = params.get('room') || 'testing';
     worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
-    worker.current.postMessage({ type: "connect", payload: "/api" });
-    worker.current.postMessage({ type: "join", payload: 'testing'})
+    const connectToWebSocket = async () => {
+      await new Promise<void>((resolve) => {
+        const onConnect = (event: MessageEvent) => {
+          if (event.data.type === 'connected') {
+            worker.current?.removeEventListener('message', onConnect);
+            setIsConnected(true);
+            resolve();
+          }
+        };
+        worker.current?.addEventListener('message', onConnect);
+        worker.current?.postMessage({ type: "connect", payload: "/api" });
+      });
+
+      worker.current?.postMessage({ type: "join", payload: roomId });
+    };
+
+    connectToWebSocket();
+
     worker.current.onmessage = (event) => {
       const { type, payload } = event.data;
       if (type === "connected") {
@@ -163,14 +180,16 @@ const Game = () => {
         Math.abs(playerPosition.dy) >= 1 ||
         1 === 1
       ) {
+        if (isConnected && worker.current) {
+          worker.current.postMessage({
+            type: "send",
+            payload: {
+              x: playArea.x - playerPosition.x,
+              y: playArea.y - playerPosition.y,
+            },
+          });
+        }
 
-        worker.current?.postMessage({
-          type: "send",
-          payload: {
-            x: playArea.x - playerPosition.x,
-            y: playArea.y - playerPosition.y,
-          },
-        });
         const now = new Date();
         if (now.getTime() - lastActive.getTime() > 3000) {
           setOpponentPosition(null);
@@ -181,15 +200,7 @@ const Game = () => {
     return () => {
       clearInterval(interval);
     }
-  }, [
-    lastActive,
-    playArea.x,
-    playArea.y,
-    playerPosition.dx,
-    playerPosition.dy,
-    playerPosition.x,
-    playerPosition.y,
-  ]);
+  }, [isConnected, lastActive, playArea.x, playArea.y, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
 
   return (
     <Stage

@@ -34,6 +34,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (typeof payload !== 'string') {
         throw new Error('Invalid payload: Expected string type');
       }
+      console.log("Joining room");
       if (websocket && websocket.readyState === WebSocket.OPEN) {
         websocket.send(JSON.stringify({ type: 'join', payload: payload}));
       }
@@ -60,9 +61,11 @@ const connect = (url: string) => {
       if (type === 'coordinates') {
         self.postMessage({ type: 'message', payload: payload });
       } else if (type === 'joined') {
+        console.log("Joined room successfully")
         self.postMessage({ type: 'message', payload: 'Joined room' });
       } else if (type === 'error') {
         console.error('Error occurred');
+        console.log(payload);
       }
 
     };
