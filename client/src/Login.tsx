@@ -29,7 +29,7 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Join a Room</h1>
+      <h1 className={styles.h1}>Join a Room</h1>
       <input
         type="text"
         value={roomCode}

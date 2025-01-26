@@ -229,7 +229,6 @@ const Game = () => {
           <Graphics
             draw={(g) => {
               g.clear();
-              // Draw the line
               g.lineStyle(2, 0x000000);
               g.moveTo(playerPosition.x, playerPosition.y);
               g.lineTo(lineEnd.x, lineEnd.y);
