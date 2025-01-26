@@ -1,6 +1,6 @@
 import { Stage, Graphics } from "@pixi/react";
 import { useState, useEffect, useRef } from "react";
-
+import styles from './Game.module.css';
 interface Coordinates2D {
   x: number;
   y: number;
@@ -43,9 +43,10 @@ const Game = () => {
 
   const worker = useRef<Worker | null>(null);
 
+  const params = new URLSearchParams(window.location.search);
+  const roomId = params.get("room") || "testing";
+
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const roomId = params.get("room") || "testing";
     worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
     const connectToWebSocket = async () => {
       await new Promise<void>((resolve) => {
@@ -217,35 +218,39 @@ const Game = () => {
   ]);
 
   return (
-    <Stage
-      width={playArea.x}
-      height={playArea.y}
-      options={{ background: 0x1099bb }}
-    >
-      {isDragging.current && (
+    <div className={styles.container}>
+      <h1 className={styles.h1}>Room Id: {roomId}</h1>
+      <Stage
+        width={playArea.x}
+        height={playArea.y}
+        options={{ background: 0x1099bb }}
+      >
+        {isDragging.current && (
+          <Graphics
+            draw={(g) => {
+              g.clear();
+              // Draw the line
+              g.lineStyle(2, 0x000000);
+              g.moveTo(playerPosition.x, playerPosition.y);
+              g.lineTo(lineEnd.x, lineEnd.y);
+            }}
+          />
+        )}
         <Graphics
           draw={(g) => {
             g.clear();
-            // Draw the line
-            g.lineStyle(2, 0x000000);
-            g.moveTo(playerPosition.x, playerPosition.y);
-            g.lineTo(lineEnd.x, lineEnd.y);
+            g.beginFill(0xff0000);
+            g.drawCircle(playerPosition.x, playerPosition.y, playerRadius);
+            if (opponentPosition) {
+              g.beginFill(0x006400);
+              g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
+            }
+            g.endFill();
           }}
         />
-      )}
-      <Graphics
-        draw={(g) => {
-          g.clear();
-          g.beginFill(0xff0000);
-          g.drawCircle(playerPosition.x, playerPosition.y, playerRadius);
-          if (opponentPosition) {
-            g.beginFill(0x006400);
-            g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
-          }
-          g.endFill();
-        }}
-      />
-    </Stage>
+      </Stage>
+    </div>
+
   );
 };
 
