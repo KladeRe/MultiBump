@@ -3,7 +3,7 @@ An over-engineered real-time browser multiplayer game. The players bump into eac
 
 The current implementation is designed with two players in mind, however, it allows more players at the same time.
 
-## Dependencies
+## Requirements
 
 Docker Compose needs to be installed for a local setup to work. Installation instructions can be found here: [Docker Compose Installation](https://docs.docker.com/compose/install/)
 
@@ -24,6 +24,7 @@ For more details about the project, check out these links:
 - [Overall architecture](/docs/architecture.md)
 - [Programming languages](/docs/technologies.md)
 - [Project status](/docs/status.md)
+- [Idea behind project](/docs/idea.md)
 
 ## Contributing
 
