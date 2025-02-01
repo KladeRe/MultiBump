@@ -93,7 +93,7 @@ const Game = () => {
       worker.current?.postMessage({ type: "close" });
       worker.current?.terminate();
     };
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
