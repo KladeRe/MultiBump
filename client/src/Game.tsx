@@ -1,6 +1,6 @@
 import { Stage, Graphics } from "@pixi/react";
 import { useState, useEffect, useRef } from "react";
-import styles from './Game.module.css';
+import './App.css'
 interface Coordinates2D {
   x: number;
   y: number;
@@ -218,8 +218,8 @@ const Game = () => {
   ]);
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.h1}>Room Id: {roomId}</h1>
+    <div className="container">
+      <h1>Room Id: {roomId}</h1>
       <Stage
         width={playArea.x}
         height={playArea.y}

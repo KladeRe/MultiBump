@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './Login.module.css';
-
+import './App.css'
 const Login = () => {
   const [roomCode, setRoomCode] = useState('');
   const navigate = useNavigate();
@@ -17,19 +16,18 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.h1}>Join a Room</h1>
+    <div className="container">
+      <h1>Join a Room</h1>
       <input
         type="text"
         value={roomCode}
         onChange={(e) => setRoomCode(e.target.value)}
         placeholder="Enter room code"
-        className={styles.input}
       />
-      <button onClick={handleJoin} className={styles.button}>
+      <button onClick={handleJoin} className="button-primary">
         Join Room
       </button>
-      <button onClick={handleRoomCreate} className={`${styles.button} ${styles.buttonSecondary}`}>
+      <button onClick={handleRoomCreate} className="button-secondary">
         Create Room
       </button>
     </div>
