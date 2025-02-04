@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import {expect, test, describe} from 'vitest';
 
 const sum = (a: number, b: number): number => a + b;
 
