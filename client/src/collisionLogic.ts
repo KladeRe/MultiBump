@@ -1,5 +1,4 @@
 export interface CollisionArea {
-  id: string;
   x: number;
   y: number;
   width: number;
