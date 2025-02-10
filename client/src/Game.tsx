@@ -1,5 +1,6 @@
 import { Stage, Graphics } from "@pixi/react";
 import { useState, useEffect, useRef } from "react";
+import { connectToWebSocket } from "./worker-wrapper";
 import './App.css'
 interface Coordinates2D {
   x: number;
@@ -48,23 +49,8 @@ const Game = () => {
 
   useEffect(() => {
     worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
-    const connectToWebSocket = async () => {
-      await new Promise<void>((resolve) => {
-        const onConnect = (event: MessageEvent) => {
-          if (event.data.type === "connected") {
-            worker.current?.removeEventListener("message", onConnect);
-            setIsConnected(true);
-            resolve();
-          }
-        };
-        worker.current?.addEventListener("message", onConnect);
-        worker.current?.postMessage({ type: "connect", payload: "/api" });
-      });
 
-      worker.current?.postMessage({ type: "join", payload: roomId });
-    };
-
-    connectToWebSocket();
+    connectToWebSocket(roomId, setIsConnected, worker as React.MutableRefObject<Worker>);
 
     worker.current.onmessage = (event) => {
       const { type, payload } = event.data;
@@ -184,8 +170,8 @@ const Game = () => {
       if (
         isConnected &&
         worker.current &&
-        (Math.abs(playerPosition.dx) >= 0.4 ||
-          Math.abs(playerPosition.dy) >= 0.4 ||
+        (Math.abs(playerPosition.dx) >= 0.1 ||
+          Math.abs(playerPosition.dy) >= 0.1 ||
           intervalCounter.current % 20 == 0)
       ) {
         worker.current.postMessage({
