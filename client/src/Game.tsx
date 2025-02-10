@@ -1,18 +1,8 @@
 import { Stage, Graphics } from "@pixi/react";
 import { useState, useEffect, useRef } from "react";
-import { connectToWebSocket } from "./worker-wrapper";
+import { connectToWebSocket, socketListen } from "./worker-wrapper";
+import { Coordinates2D, PlayerInfo } from "./types";
 import './App.css'
-interface Coordinates2D {
-  x: number;
-  y: number;
-}
-
-interface PlayerInfo {
-  x: number;
-  y: number;
-  dx: number;
-  dy: number;
-}
 
 const Game = () => {
   const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
@@ -52,28 +42,7 @@ const Game = () => {
 
     connectToWebSocket(roomId, setIsConnected, worker as React.MutableRefObject<Worker>);
 
-    worker.current.onmessage = (event) => {
-      const { type, payload } = event.data;
-      if (type === "connected") {
-        console.log("WebSocket connected");
-      } else if (type === "message") {
-        console.log("Received message:", payload);
-        const wsMessage = payload;
-        if (wsMessage.x && wsMessage.y) {
-          setOpponentPosition((prev) => ({
-            x: wsMessage.x,
-            y: wsMessage.y,
-            dx: prev?.dx ?? 0,
-            dy: prev?.dy ?? 0,
-          }));
-          setLastActive(new Date());
-        }
-      } else if (type === "disconnected") {
-        console.log("WebSocket disconnected");
-      } else if (type === "error") {
-        console.log("WebSocket error:", payload);
-      }
-    };
+    socketListen(setOpponentPosition, setLastActive, worker.current);
 
     return () => {
       worker.current?.postMessage({ type: "close" });
