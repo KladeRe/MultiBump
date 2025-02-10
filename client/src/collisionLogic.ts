@@ -23,14 +23,14 @@ export const checkCollision = (
   const distanceX = Math.min(diffX1, diffX2);
   const distanceY = Math.min(diffY1, diffY2);
 
-  let bounceX = playerDX;
-  let bounceY = playerDY;
+  let bounceX = 0;
+  let bounceY = 0;
 
-  if (distanceX <= playerRadius) {
+  if (distanceX <= playerRadius && playerDX != 0) {
     bounceX = playerDX * bounceForce;
   }
 
-  if (distanceY <= playerRadius) {
+  if (distanceY <= playerRadius && playerDY != 0) {
     bounceY = playerDY * bounceForce;
   }
 

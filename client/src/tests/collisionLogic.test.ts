@@ -13,8 +13,8 @@ describe('checkCollision', () => {
   it('Should not react when not moving', () => {
     const bounce = checkCollision(110, 105, 0, 0, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(-0);
-    expect(bounce.bounceY).toBe(-0);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should not react when player is far away #1', () => {
@@ -23,8 +23,8 @@ describe('checkCollision', () => {
 
     const bounce = checkCollision(500, 600, dx, dy, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(dx);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should not react when player is far away #2', () => {
@@ -33,8 +33,8 @@ describe('checkCollision', () => {
 
     const bounce = checkCollision(10, 600, dx, dy, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(dx);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should not react when player is far away #3', () => {
@@ -43,8 +43,8 @@ describe('checkCollision', () => {
 
     const bounce = checkCollision(10, 60, dx, dy, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(dx);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should not react when player is far away #4', () => {
@@ -53,8 +53,8 @@ describe('checkCollision', () => {
 
     const bounce = checkCollision(500, 60, dx, dy, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(dx);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should not react when player is far away inside the area', () => {
@@ -63,8 +63,8 @@ describe('checkCollision', () => {
 
     const bounce = checkCollision(150, 200, dx, dy, 20, testCollisionArea, bounceForce);
 
-    expect(bounce.bounceX).toBe(dx);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceX).toBe(0);
+    expect(bounce.bounceY).toBe(0);
   });
 
   it('Should react when player is close #1', () => {
@@ -84,7 +84,7 @@ describe('checkCollision', () => {
     const bounce = checkCollision(80, 40, dx, dy, 20, testCollisionArea, bounceForce);
 
     expect(bounce.bounceX).toBe(dx*bounceForce);
-    expect(bounce.bounceY).toBe(dy);
+    expect(bounce.bounceY).toBe(0);
   });
 
 
