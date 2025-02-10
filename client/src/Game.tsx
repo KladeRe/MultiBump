@@ -1,8 +1,8 @@
-import { Stage, Graphics } from "@pixi/react";
 import { useState, useEffect, useRef } from "react";
 import { connectToWebSocket, socketListen } from "./worker-wrapper";
 import { Coordinates2D, PlayerInfo } from "./types";
 import './App.css'
+import Renderer from "./Renderer";
 
 const Game = () => {
   const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
@@ -173,38 +173,7 @@ const Game = () => {
   ]);
 
   return (
-    <div className="container">
-      <h1>Room Id: {roomId}</h1>
-      <Stage
-        width={playArea.x}
-        height={playArea.y}
-        options={{ background: 0x1099bb }}
-      >
-        {isDragging.current && (
-          <Graphics
-            draw={(g) => {
-              g.clear();
-              g.lineStyle(2, 0x000000);
-              g.moveTo(playerPosition.x, playerPosition.y);
-              g.lineTo(lineEnd.x, lineEnd.y);
-            }}
-          />
-        )}
-        <Graphics
-          draw={(g) => {
-            g.clear();
-            g.beginFill(0xff0000);
-            g.drawCircle(playerPosition.x, playerPosition.y, playerRadius);
-            if (opponentPosition) {
-              g.beginFill(0x006400);
-              g.drawCircle(opponentPosition.x, opponentPosition.y, playerRadius);
-            }
-            g.endFill();
-          }}
-        />
-      </Stage>
-    </div>
-
+    <Renderer roomId={roomId} playArea={playArea} isDragging={isDragging} playerPosition={playerPosition} lineEnd={lineEnd} playerRadius={playerRadius} opponentPosition={opponentPosition}/>
   );
 };
 
