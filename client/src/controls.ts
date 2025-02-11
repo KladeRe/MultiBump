@@ -24,7 +24,7 @@ export class Controls {
     this.setPlayerPosition = setPlayerPosition;
   }
 
-  handleMouseDown = (event: MouseEvent) => {
+  handleMouseDown = (event: MouseEvent): void => {
     const stageElement = event.currentTarget as HTMLElement;
     const boundingRect = stageElement.getBoundingClientRect();
     const mouseX = event.clientX - boundingRect.left;
@@ -41,7 +41,7 @@ export class Controls {
     this.setLineEnd({ x: this.playerPosition.x, y: this.playerPosition.y });
   };
 
-  handleMouseUp = (event: MouseEvent) => {
+  handleMouseUp = (event: MouseEvent): void => {
     if (this.isDragging.current) {
       const stageElement = document.querySelector("canvas");
       const boundingRect = stageElement?.getBoundingClientRect();
@@ -60,7 +60,7 @@ export class Controls {
     }
   };
 
-  handleMouseMove = (event: MouseEvent) => {
+  handleMouseMove = (event: MouseEvent): void => {
     if (this.isDragging.current) {
       const stageElement = document.querySelector("canvas");
       const boundingRect = stageElement?.getBoundingClientRect();
@@ -73,19 +73,15 @@ export class Controls {
     }
   };
 
-  addListeners = () => {
+  addListeners = (): void => {
     window.addEventListener("mousemove", this.handleMouseMove);
     this.stageElement?.addEventListener("mousedown", this.handleMouseDown);
     window.addEventListener("mouseup", this.handleMouseUp);
   };
 
-  removeListeners = () => {
+  removeListeners = (): void => {
     this.stageElement?.removeEventListener("mousedown", this.handleMouseDown);
     window.removeEventListener("mouseup", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
   }
-
-
-
-
 }

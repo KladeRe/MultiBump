@@ -4,6 +4,7 @@ import { Coordinates2D, PlayerInfo } from "./types";
 import './App.css'
 import Renderer from "./Renderer";
 import { Controls } from "./controls";
+import { GameLoop } from "./GameLoop";
 
 const Game = () => {
   const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
@@ -61,64 +62,20 @@ const Game = () => {
   }, [playerPosition]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPlayerPosition((prev) => {
-        const nextX = prev.x + prev.dx;
-        const nextY = prev.y + prev.dy;
-        const nextDx =
-          nextX <= playerRadius || nextX >= playArea.x - playerRadius
-            ? prev.dx * -0.8
-            : prev.dx;
-        const nextDy =
-          nextY <= playerRadius || nextY >= playArea.y - playerRadius
-            ? prev.dy * -0.8
-            : prev.dy;
-
-        return {
-          x: Math.min(Math.max(nextX, playerRadius), playArea.x - playerRadius),
-          y: Math.min(Math.max(nextY, playerRadius), playArea.y - playerRadius),
-          dx: nextDx * 0.9,
-          dy: nextDy * 0.9,
-        };
-      });
-
-      intervalCounter.current += 1;
-
-      if (
-        isConnected &&
-        worker.current &&
-        (Math.abs(playerPosition.dx) >= 0.1 ||
-          Math.abs(playerPosition.dy) >= 0.1 ||
-          intervalCounter.current % 20 == 0)
-      ) {
-        worker.current.postMessage({
-          type: "send",
-          payload: {
-            x: playArea.x - playerPosition.x,
-            y: playArea.y - playerPosition.y,
-          },
-        });
-
-        const now = new Date();
-        if (now.getTime() - lastActive.getTime() > 3000) {
-          setOpponentPosition(null);
-        }
-      }
-    }, 16);
+    const interval = GameLoop({playerRadius,
+      playArea,
+      intervalCounter,
+      isConnected,
+      worker,
+      playerPosition,
+      lastActive,
+      setPlayerPosition,
+      setOpponentPosition})
 
     return () => {
       clearInterval(interval);
     };
-  }, [
-    isConnected,
-    lastActive,
-    playArea.x,
-    playArea.y,
-    playerPosition.dx,
-    playerPosition.dy,
-    playerPosition.x,
-    playerPosition.y,
-  ]);
+  }, [isConnected, lastActive, playArea, playArea.x, playArea.y, playerPosition, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
 
   return (
     <Renderer roomId={roomId} playArea={playArea} isDragging={isDragging} playerPosition={playerPosition} lineEnd={lineEnd} playerRadius={playerRadius} opponentPosition={opponentPosition}/>

@@ -24,7 +24,7 @@ export const socketListen = async (
   setOpponentPosition: (value: React.SetStateAction<PlayerInfo | null>) => void,
   setLastActive: (value: React.SetStateAction<Date>) => void,
   worker: Worker,
-) => {
+): Promise<void> => {
   worker.onmessage = (event) => {
     const { type, payload } = event.data;
     if (type === "connected") {
