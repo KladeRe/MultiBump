@@ -3,6 +3,7 @@ import { connectToWebSocket, socketListen } from "./worker-wrapper";
 import { Coordinates2D, PlayerInfo } from "./types";
 import './App.css'
 import Renderer from "./Renderer";
+import { Controls } from "./controls";
 
 const Game = () => {
   const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
@@ -51,64 +52,11 @@ const Game = () => {
   }, [roomId]);
 
   useEffect(() => {
-    const handleMouseDown = (event: MouseEvent) => {
-      const stageElement = event.currentTarget as HTMLElement;
-      const boundingRect = stageElement.getBoundingClientRect();
-      const mouseX = event.clientX - boundingRect.left;
-      const mouseY = event.clientY - boundingRect.top;
-      const dx = mouseX - playerPosition.x;
-      const dy = mouseY - playerPosition.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < playerRadius) {
-        isDragging.current = true;
-        initialMousePos.current = { x: mouseX, y: mouseY };
-      }
-
-      setLineEnd({ x: playerPosition.x, y: playerPosition.y });
-    };
-
-    const handleMouseUp = (event: MouseEvent) => {
-      if (isDragging.current) {
-        const stageElement = document.querySelector("canvas");
-        const boundingRect = stageElement?.getBoundingClientRect();
-        const mouseX = event.clientX - (boundingRect?.left ?? 0);
-        const mouseY = event.clientY - (boundingRect?.top ?? 0);
-
-        const dx = mouseX - initialMousePos.current.x;
-        const dy = mouseY - initialMousePos.current.y;
-
-        setPlayerPosition((prev) => ({
-          ...prev,
-          dx: dx * -0.7,
-          dy: dy * -0.7,
-        }));
-        isDragging.current = false;
-      }
-    };
-
-    const handleMouseMove = (event: MouseEvent) => {
-      if (isDragging.current) {
-        const stageElement = document.querySelector("canvas");
-        const boundingRect = stageElement?.getBoundingClientRect();
-        const mouseX = event.clientX - (boundingRect?.left ?? 0);
-        const mouseY = event.clientY - (boundingRect?.top ?? 0);
-        setLineEnd({
-          x: playerPosition.x + (playerPosition.x - mouseX),
-          y: playerPosition.y + (playerPosition.y - mouseY),
-        });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    const stageElement = document.querySelector("canvas");
-    stageElement?.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
+    const controls = new Controls(playerPosition, playerRadius, isDragging, initialMousePos, setLineEnd, setPlayerPosition);
+    controls.addListeners();
 
     return () => {
-      stageElement?.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("mousemove", handleMouseMove);
+      controls.removeListeners();
     };
   }, [playerPosition]);
 
