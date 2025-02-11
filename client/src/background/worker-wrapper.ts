@@ -1,4 +1,4 @@
-import { PlayerInfo } from "./types";
+import { PlayerInfo } from "../util/types";
 
 export const connectToWebSocket = async (
   roomId: string,

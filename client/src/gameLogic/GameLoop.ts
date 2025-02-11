@@ -1,4 +1,4 @@
-import { Coordinates2D, PlayerInfo } from "./types";
+import { Coordinates2D, PlayerInfo } from "../util/types";
 
 export const GameLoop = ({
   playerRadius,

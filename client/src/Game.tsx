@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { connectToWebSocket, socketListen } from "./worker-wrapper";
-import { Coordinates2D, PlayerInfo } from "./types";
-import './App.css'
+import { connectToWebSocket, socketListen } from "./background/worker-wrapper";
+import { Coordinates2D, PlayerInfo } from "./util/types";
+import { Controls } from "./gameLogic/controls";
+import { GameLoop } from "./gameLogic/GameLoop";
+
 import Renderer from "./Renderer";
-import { Controls } from "./controls";
-import { GameLoop } from "./GameLoop";
+
+import './App.css'
 
 const Game = () => {
   const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
@@ -40,7 +42,7 @@ const Game = () => {
   const roomId = params.get("room") || "testing";
 
   useEffect(() => {
-    worker.current = new Worker(new URL("./socket-worker.ts", import.meta.url));
+    worker.current = new Worker(new URL("./background/socket-worker.ts", import.meta.url));
 
     connectToWebSocket(roomId, setIsConnected, worker as React.MutableRefObject<Worker>);
 
