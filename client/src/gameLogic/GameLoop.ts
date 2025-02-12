@@ -41,8 +41,8 @@ export const GameLoop = ({
       return {
         x: Math.min(Math.max(nextX, playerRadius), playArea.x - playerRadius),
         y: Math.min(Math.max(nextY, playerRadius), playArea.y - playerRadius),
-        dx: nextDx * 0.9,
-        dy: nextDy * 0.9,
+        dx: nextDx * 0.97,
+        dy: nextDy * 0.97,
       };
     });
 

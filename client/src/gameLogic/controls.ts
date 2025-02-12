@@ -51,10 +51,18 @@ export class Controls {
       const dx = mouseX - this.initialMousePos.current.x;
       const dy = mouseY - this.initialMousePos.current.y;
 
+      const innerProduct = Math.sqrt(dx*dx + dy*dy);
+
+      let multiplier = -1;
+
+      if (innerProduct > this.playerRadius) {
+        multiplier *= this.playerRadius / innerProduct;
+      }
+
       this.setPlayerPosition((prev) => ({
         ...prev,
-        dx: dx * -0.7,
-        dy: dy * -0.7,
+        dx: multiplier * dx,
+        dy: multiplier * dy,
       }));
       this.isDragging.current = false;
     }
@@ -66,9 +74,20 @@ export class Controls {
       const boundingRect = stageElement?.getBoundingClientRect();
       const mouseX = event.clientX - (boundingRect?.left ?? 0);
       const mouseY = event.clientY - (boundingRect?.top ?? 0);
+
+      const dx = this.playerPosition.x - mouseX;
+      const dy = this.playerPosition.y - mouseY;
+      const innerProduct = Math.sqrt(dx*dx + dy*dy);
+
+      let multiplier = 1;
+
+      if (innerProduct > 5*this.playerRadius) {
+        multiplier = 5*(this.playerRadius / innerProduct);
+      }
+
       this.setLineEnd({
-        x: this.playerPosition.x + (this.playerPosition.x - mouseX),
-        y: this.playerPosition.y + (this.playerPosition.y - mouseY),
+        x: this.playerPosition.x + multiplier*(this.playerPosition.x - mouseX),
+        y: this.playerPosition.y + multiplier*(this.playerPosition.y - mouseY),
       });
     }
   };
