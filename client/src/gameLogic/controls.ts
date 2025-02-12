@@ -1,10 +1,9 @@
-import { Coordinates2D, PlayerInfo } from "../util/types";
+import { PlayerInfo } from "../util/types";
 
 export class Controls {
   playerPosition: PlayerInfo;
   playerRadius: number;
   isDragging: React.MutableRefObject<boolean>;
-  initialMousePos: React.MutableRefObject<Coordinates2D>;
   setLineEnd: React.Dispatch<React.SetStateAction<{
     x: number;
     y: number;
@@ -12,31 +11,20 @@ export class Controls {
   setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>;
   stageElement = document.querySelector("canvas");
 
-  constructor(playerPosition: PlayerInfo, playerRadius: number, isDragging: React.MutableRefObject<boolean>, initialMousePos: React.MutableRefObject<Coordinates2D>, setLineEnd: React.Dispatch<React.SetStateAction<{
+  constructor(playerPosition: PlayerInfo, playerRadius: number, isDragging: React.MutableRefObject<boolean>, setLineEnd: React.Dispatch<React.SetStateAction<{
     x: number;
     y: number;
 }>>, setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>) {
     this.playerPosition = playerPosition;
     this.playerRadius = playerRadius;
     this.isDragging = isDragging;
-    this.initialMousePos = initialMousePos;
     this.setLineEnd = setLineEnd;
     this.setPlayerPosition = setPlayerPosition;
   }
 
-  handleMouseDown = (event: MouseEvent): void => {
-    const stageElement = event.currentTarget as HTMLElement;
-    const boundingRect = stageElement.getBoundingClientRect();
-    const mouseX = event.clientX - boundingRect.left;
-    const mouseY = event.clientY - boundingRect.top;
-    const dx = mouseX - this.playerPosition.x;
-    const dy = mouseY - this.playerPosition.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+  handleMouseDown = (): void => {
+    this.isDragging.current = true;
 
-    if (distance < this.playerRadius) {
-      this.isDragging.current = true;
-      this.initialMousePos.current = { x: mouseX, y: mouseY };
-    }
 
     this.setLineEnd({ x: this.playerPosition.x, y: this.playerPosition.y });
   };
@@ -48,8 +36,8 @@ export class Controls {
       const mouseX = event.clientX - (boundingRect?.left ?? 0);
       const mouseY = event.clientY - (boundingRect?.top ?? 0);
 
-      const dx = mouseX - this.initialMousePos.current.x;
-      const dy = mouseY - this.initialMousePos.current.y;
+      const dx = mouseX - this.playerPosition.x;
+      const dy = mouseY - this.playerPosition.y;
 
       const innerProduct = Math.sqrt(dx*dx + dy*dy);
 

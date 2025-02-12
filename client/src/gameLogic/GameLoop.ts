@@ -7,7 +7,6 @@ export const GameLoop = ({
   isConnected,
   worker,
   playerPosition,
-  opponentPosition,
   lastActive,
   setPlayerPosition,
   setOpponentPosition
@@ -18,7 +17,6 @@ export const GameLoop = ({
   isConnected: boolean,
   worker: React.MutableRefObject<Worker | null>,
   playerPosition: PlayerInfo,
-  opponentPosition: PlayerInfo | null,
   lastActive: Date,
   setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>,
   setOpponentPosition: React.Dispatch<React.SetStateAction<PlayerInfo | null>>
@@ -27,14 +25,12 @@ export const GameLoop = ({
     setPlayerPosition((prev) => {
       const nextX = prev.x + prev.dx;
       const nextY = prev.y + prev.dy;
-      const opponentNextX = (opponentPosition?.x ?? -100) + (opponentPosition?.dx ?? 0);
-      const opponentNextY = (opponentPosition?.y ?? -100) + (opponentPosition?.dy ?? 0);
       const nextDx =
-        nextX <= playerRadius || nextX >= playArea.x - playerRadius || Math.abs(opponentNextX - nextX) <= (2*playerRadius)
+        nextX <= playerRadius || nextX >= playArea.x - playerRadius
           ? prev.dx * -0.8
           : prev.dx;
       const nextDy =
-        nextY <= playerRadius || nextY >= playArea.y - playerRadius || Math.abs(opponentNextY - nextY) <= (2*playerRadius)
+        nextY <= playerRadius || nextY >= playArea.y - playerRadius
           ? prev.dy * -0.8
           : prev.dy;
 
