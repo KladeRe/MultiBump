@@ -70,6 +70,7 @@ const Game = () => {
       isConnected,
       worker,
       playerPosition,
+      opponentPosition,
       lastActive,
       setPlayerPosition,
       setOpponentPosition})
@@ -77,7 +78,7 @@ const Game = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [isConnected, lastActive, playArea, playArea.x, playArea.y, playerPosition, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
+  }, [isConnected, lastActive, opponentPosition, playArea, playArea.x, playArea.y, playerPosition, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
 
   return (
     <Renderer roomId={roomId} playArea={playArea} isDragging={isDragging} playerPosition={playerPosition} lineEnd={lineEnd} playerRadius={playerRadius} opponentPosition={opponentPosition}/>
