@@ -23,25 +23,27 @@ a:hover {
 }
 
 body {
-  margin: 0;
+  margin: 0 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  justify-content: center;
 }
 
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
 }
 
 .stage-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  position: relative;
   width: 100%;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -49,12 +51,15 @@ h1 {
   line-height: 1.1;
 }
 
-h1.left {
-  margin-right: 20px;
+.stage-wrapper .stage {
+  flex: 0 0 auto;
+  margin: 0 auto;
 }
-
-h1.right {
-  margin-left: 20px;
+.stage-wrapper h1.left,
+.stage-wrapper h1.right {
+  flex: 1;
+  text-align: center;
+  flex-basis: 0;
+  width: 100px;
 }
-
 

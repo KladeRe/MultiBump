@@ -9,7 +9,12 @@ import Renderer from "./Renderer";
 import './App.css'
 
 const Game = () => {
-  const [playArea] = useState<Coordinates2D>({ x: 600, y: 900 });
+  const params = new URLSearchParams(window.location.search);
+  const roomId = params.get("room") || "1000-0600";
+  const parts = roomId.split('-');
+  const width = parseInt(parts[0], 10);
+  const height = parseInt(parts[1], 10);
+  const [playArea] = useState<Coordinates2D>({ x: width, y: height });
   const playerRadius = 25;
 
   const [playerPosition, setPlayerPosition] = useState<PlayerInfo>({
@@ -36,9 +41,6 @@ const Game = () => {
   const intervalCounter = useRef<number>(0);
 
   const worker = useRef<Worker | null>(null);
-
-  const params = new URLSearchParams(window.location.search);
-  const roomId = params.get("room") || "testing";
 
   useEffect(() => {
     worker.current = new Worker(new URL("./background/socket-worker.ts", import.meta.url));
