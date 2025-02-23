@@ -77,7 +77,7 @@ export const GameLoop = ({
         setOpponentPosition(null);
       }
     }
-  }, 16);
+  }, 8);
 
   return interval;
 }

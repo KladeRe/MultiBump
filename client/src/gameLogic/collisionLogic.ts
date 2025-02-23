@@ -45,25 +45,16 @@ export const playerCollision = (
   const dy = (player.y+player.dy) - (opponent.y+opponent.dy);
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  console.log("Ran function")
-
   if (distance <= playerRadius * 2) {
 
-    // Calculate relative velocity
     const relativeVX = player.dx - opponent.dx;
     const relativeVY = player.dy - opponent.dy;
 
-    // Calculate collision normal
     const normalX = dx / distance;
     const normalY = dy / distance;
 
-    // Calculate relative velocity in terms of normal
-
     const relativeVelocityNormal = relativeVX * normalX + relativeVY * normalY;
-    console.log("relativeY", relativeVY)
-    console.log("normalY", normalY)
-    console.log("Relative", relativeVelocityNormal)
-    // Only bounce if objects are moving toward each other
+
     if (relativeVelocityNormal < 0) {
       console.log("Reacted")
       const bounceX = -relativeVelocityNormal * normalX;

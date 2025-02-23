@@ -17,6 +17,10 @@ const RoomMaker = () => {
   const handleHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeight(Number(event.target.value));
   }
+
+  const createRoom = () => {
+    navigate("/game?room=1234")
+  }
   return (
     <div>
       <h1>Room creator</h1>
@@ -49,6 +53,7 @@ const RoomMaker = () => {
           className="slider"
         />
       </div>
+      <button onClick={createRoom}>Create Room</button>
     </div>
   );
 };
