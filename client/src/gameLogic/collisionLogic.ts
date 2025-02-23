@@ -1,3 +1,5 @@
+import { PlayerInfo } from "../util/types";
+
 export interface CollisionArea {
   x: number;
   y: number;
@@ -15,24 +17,60 @@ export const checkCollision = (
   bounceForce: number
 ): { bounceX: number; bounceY: number } => {
 
-  const diffX1 = Math.abs(playerX - (area.x + area.width));
-  const diffX2 = Math.abs(playerX - area.x);
-  const diffY1 = Math.abs(playerY - (area.y + area.height));
-  const diffY2 = Math.abs(playerY - area.y);
-
-  const distanceX = Math.min(diffX1, diffX2);
-  const distanceY = Math.min(diffY1, diffY2);
-
   let bounceX = 0;
   let bounceY = 0;
 
-  if (distanceX <= playerRadius && playerDX != 0) {
-    bounceX = playerDX * bounceForce;
+  if (playerX >= area.x - playerRadius && playerX <= area.x + area.width + playerRadius) {
+    if (playerX <= area.x || playerX >= area.x + area.width) {
+      bounceX = playerDX * bounceForce;
+    }
   }
 
-  if (distanceY <= playerRadius && playerDY != 0) {
-    bounceY = playerDY * bounceForce;
+  if (playerY >= area.y - playerRadius && playerY <= area.y + area.height + playerRadius) {
+    if (playerY <= area.y || playerY >= area.y + area.height) {
+      bounceY = playerDY * bounceForce;
+    }
   }
 
   return { bounceX, bounceY };
 };
+
+export const playerCollision = (
+  player: PlayerInfo,
+  opponent: PlayerInfo,
+  playerRadius: number,
+
+): { bounceX: number; bounceY: number } => {
+  const dx = (player.x+player.dx) - (opponent.x+opponent.dx);
+  const dy = (player.y+player.dy) - (opponent.y+opponent.dy);
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  console.log("Ran function")
+
+  if (distance <= playerRadius * 2) {
+
+    // Calculate relative velocity
+    const relativeVX = player.dx - opponent.dx;
+    const relativeVY = player.dy - opponent.dy;
+
+    // Calculate collision normal
+    const normalX = dx / distance;
+    const normalY = dy / distance;
+
+    // Calculate relative velocity in terms of normal
+
+    const relativeVelocityNormal = relativeVX * normalX + relativeVY * normalY;
+    console.log("relativeY", relativeVY)
+    console.log("normalY", normalY)
+    console.log("Relative", relativeVelocityNormal)
+    // Only bounce if objects are moving toward each other
+    if (relativeVelocityNormal < 0) {
+      console.log("Reacted")
+      const bounceX = -relativeVelocityNormal * normalX;
+      const bounceY = -relativeVelocityNormal * normalY;
+      return { bounceX, bounceY };
+    }
+  }
+
+  return { bounceX: 0, bounceY: 0 };
+}

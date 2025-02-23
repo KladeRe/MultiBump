@@ -22,10 +22,10 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       connect(payload);
       break;
     case 'send':
-      if (typeof payload !== 'object' || !('x' in payload) || !('y' in payload)) {
+      if (typeof payload !== 'object' || !('x' in payload) || !('y' in payload) || !('dx' in payload) || !('dy' in payload)) {
         throw new Error('Invalid payload: Expected Position object');
       }
-      console.log("Sending message")
+      // console.log("Sending message")
       if (websocket && websocket.readyState === WebSocket.OPEN) {
         websocket.send(JSON.stringify({ type: 'position', payload: payload}));
       }

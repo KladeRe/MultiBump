@@ -69,6 +69,7 @@ const Game = () => {
       isConnected,
       worker,
       playerPosition,
+      opponentPosition,
       lastActive,
       setPlayerPosition,
       setOpponentPosition})

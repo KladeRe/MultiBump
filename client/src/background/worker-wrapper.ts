@@ -33,11 +33,11 @@ export const socketListen = async (
       console.log("Received message:", payload);
       const wsMessage = payload;
       if (wsMessage.x && wsMessage.y) {
-        setOpponentPosition((prev) => ({
+        setOpponentPosition(() => ({
           x: wsMessage.x,
           y: wsMessage.y,
-          dx: prev?.dx ?? 0,
-          dy: prev?.dy ?? 0,
+          dx: wsMessage.dx,
+          dy: wsMessage.dy,
         }));
         setLastActive(new Date());
       }

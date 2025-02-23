@@ -4,6 +4,8 @@ const wss = new WebSocketServer({ port: 5228 });
 interface Coordinates {
   x: number;
   y: number;
+  dx: number;
+  dy: number;
 };
 
 interface RoomParticipants {
@@ -19,7 +21,7 @@ wss.on('connection', (ws) => {
       const data = JSON.parse(message);
       if (data.type == 'position') {
         const coordinates: Coordinates = data.payload;
-        if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number') {
+        if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number' && typeof coordinates.dy === 'number') {
 
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN && currentRoom && rooms[currentRoom].has(client)) {
