@@ -30,9 +30,31 @@ body {
   min-height: 100vh;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.stage-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+h1.left {
+  margin-right: 20px;
+}
+
+h1.right {
+  margin-left: 20px;
 }
 
 

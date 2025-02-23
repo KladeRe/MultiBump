@@ -9,7 +9,7 @@ import Renderer from "./Renderer";
 import './App.css'
 
 const Game = () => {
-  const [playArea] = useState<Coordinates2D>({ x: 1000, y: 600 });
+  const [playArea] = useState<Coordinates2D>({ x: 600, y: 900 });
   const playerRadius = 25;
 
   const [playerPosition, setPlayerPosition] = useState<PlayerInfo>({
