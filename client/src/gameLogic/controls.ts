@@ -41,7 +41,7 @@ export class Controls {
 
       const innerProduct = Math.sqrt(dx*dx + dy*dy);
 
-      let multiplier = -1;
+      let multiplier = -0.01;
 
       if (innerProduct > this.playerRadius) {
         multiplier *= this.playerRadius / innerProduct;
@@ -49,8 +49,8 @@ export class Controls {
 
       this.setPlayerPosition((prev) => ({
         ...prev,
-        dx: multiplier * dx,
-        dy: multiplier * dy,
+        dx: multiplier * dx * Math.abs(dx),
+        dy: multiplier * dy * Math.abs(dy),
       }));
       this.isDragging.current = false;
     }

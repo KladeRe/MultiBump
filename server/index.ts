@@ -25,12 +25,12 @@ wss.on('connection', (ws) => {
 
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN && currentRoom && rooms[currentRoom].has(client)) {
-              client.send(JSON.stringify({ type: 'playerPosition', payload: playerPosition }));
+              client.send(JSON.stringify({ type: 'coordinates', payload: playerPosition }));
             }
           });
 
         } else {
-          ws.send('Invalid playerPosition');
+          ws.send('Invalid coordinates');
         }
       } else if (data.type == 'join') {
         const room = data.payload;
