@@ -1,7 +1,7 @@
 import WebSocket, { WebSocketServer } from 'ws';
 
 const wss = new WebSocketServer({ port: 5228 });
-interface Coordinates {
+interface Position {
   x: number;
   y: number;
   dx: number;
@@ -20,17 +20,17 @@ wss.on('connection', (ws) => {
     try {
       const data = JSON.parse(message);
       if (data.type == 'position') {
-        const coordinates: Coordinates = data.payload;
-        if (typeof coordinates.x === 'number' && typeof coordinates.y === 'number' && typeof coordinates.dy === 'number') {
+        const playerPosition: Position = data.payload;
+        if (typeof playerPosition.x === 'number' && typeof playerPosition.y === 'number' && typeof playerPosition.dy === 'number') {
 
           wss.clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN && currentRoom && rooms[currentRoom].has(client)) {
-              client.send(JSON.stringify({ type: 'coordinates', payload: coordinates }));
+              client.send(JSON.stringify({ type: 'playerPosition', payload: playerPosition }));
             }
           });
 
         } else {
-          ws.send('Invalid coordinates');
+          ws.send('Invalid playerPosition');
         }
       } else if (data.type == 'join') {
         const room = data.payload;
