@@ -35,7 +35,7 @@ wss.on('connection', (ws) => {
       } else if (data.type == 'join') {
         const room = data.payload;
         if (rooms[room] && rooms[room].size >= 2) {
-          ws.send(JSON.stringify({ type: 'error', payload: 'Room is full' }));
+          ws.send(JSON.stringify({ type: 'roomFull', payload: 'Room is full' }));
           return;
         }
         if (!rooms[room]) {

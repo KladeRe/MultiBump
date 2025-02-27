@@ -63,6 +63,8 @@ const connect = (url: string) => {
       } else if (type === 'joined') {
         console.log("Joined room successfully")
         self.postMessage({ type: 'message', payload: 'Joined room' });
+      } else if (type === 'roomFull') {
+        self.postMessage({ type: 'roomFull', payload: 'Left room because full' });
       } else if (type === 'error') {
         console.error('Error occurred');
         console.log(payload);

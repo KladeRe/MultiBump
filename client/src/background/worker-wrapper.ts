@@ -24,6 +24,7 @@ export const socketListen = async (
   setOpponentPosition: (value: React.SetStateAction<PlayerInfo | null>) => void,
   setLastActive: (value: React.SetStateAction<Date>) => void,
   worker: Worker,
+  redirectToFullRoom: () => void
 ): Promise<void> => {
   worker.onmessage = (event) => {
     const { type, payload } = event.data;
@@ -43,6 +44,8 @@ export const socketListen = async (
       }
     } else if (type === "disconnected") {
       console.log("WebSocket disconnected");
+    } else if (type === "roomFull") {
+      redirectToFullRoom();
     } else if (type === "error") {
       console.log("WebSocket error:", payload);
     }
