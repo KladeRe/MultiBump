@@ -7,13 +7,13 @@ vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn()
 }));
 
-describe('Login component', () => {
+describe('RoomMaker component', () => {
   it('should include expected text', async () => {
     render(<RoomMaker />);
     expect(screen.getByText('Room creator')).toBeInTheDocument();
     expect(screen.getByText('Coming soon!')).toBeInTheDocument();
   });
-  it('should include a return button', async () => {
+  it('should include a return to login button', async () => {
     render(<RoomMaker />);
     expect(screen.getByRole('button', { name: 'Back to room login' })).toBeInTheDocument();
   });
