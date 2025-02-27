@@ -33,6 +33,7 @@ const Game = () => {
     y: playerPosition.y,
   });
 
+  const initialMousePos = useRef<Coordinates2D>({ x: 0, y: 0 });
   const isDragging = useRef<boolean>(false);
 
   const [lastActive, setLastActive] = useState<Date>(new Date());
@@ -56,7 +57,7 @@ const Game = () => {
   }, [roomId]);
 
   useEffect(() => {
-    const controls = new Controls(playerPosition, playerRadius, isDragging, setLineEnd, setPlayerPosition);
+    const controls = new Controls(playerPosition, playerRadius, isDragging, setLineEnd, setPlayerPosition, initialMousePos);
     controls.addListeners();
 
     return () => {

@@ -30,7 +30,7 @@ export const socketListen = async (
     if (type === "connected") {
       console.log("WebSocket connected");
     } else if (type === "message") {
-      console.log("Received message:", payload);
+      //console.log("Received message:", payload);
       const wsMessage = payload;
       if (wsMessage.x && wsMessage.y) {
         setOpponentPosition(() => ({

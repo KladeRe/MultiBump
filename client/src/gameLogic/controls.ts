@@ -1,32 +1,45 @@
-import { PlayerInfo } from "../util/types";
+import { PlayerInfo, Coordinates2D } from "../util/types";
 
 export class Controls {
   playerPosition: PlayerInfo;
   playerRadius: number;
   isDragging: React.MutableRefObject<boolean>;
-  setLineEnd: React.Dispatch<React.SetStateAction<{
-    x: number;
-    y: number;
+setLineEnd: React.Dispatch<React.SetStateAction<{
+  x: number;
+  y: number;
 }>>;
+initialMousePos: React.MutableRefObject<Coordinates2D>
+;
   setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>;
   stageElement = document.querySelector("canvas");
 
   constructor(playerPosition: PlayerInfo, playerRadius: number, isDragging: React.MutableRefObject<boolean>, setLineEnd: React.Dispatch<React.SetStateAction<{
     x: number;
     y: number;
-}>>, setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>) {
+}>>, setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>, initialMousePos: React.MutableRefObject<Coordinates2D>) {
     this.playerPosition = playerPosition;
     this.playerRadius = playerRadius;
     this.isDragging = isDragging;
     this.setLineEnd = setLineEnd;
     this.setPlayerPosition = setPlayerPosition;
+    this.initialMousePos = initialMousePos;
   }
 
-  handleMouseDown = (): void => {
-    this.isDragging.current = true;
+  handleMouseDown = (event: MouseEvent) => {
+    const stageElement = event.currentTarget as HTMLElement;
+      const boundingRect = stageElement.getBoundingClientRect();
+      const mouseX = event.clientX - boundingRect.left;
+      const mouseY = event.clientY - boundingRect.top;
+      const dx = mouseX - this.playerPosition.x;
+      const dy = mouseY - this.playerPosition.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
+      if (distance < this.playerRadius) {
+        this.isDragging.current = true;
+        this.initialMousePos.current = { x: mouseX, y: mouseY };
+      }
 
-    this.setLineEnd({ x: this.playerPosition.x, y: this.playerPosition.y });
+      this.setLineEnd({ x: this.playerPosition.x, y: this.playerPosition.y });
   };
 
   handleMouseUp = (event: MouseEvent): void => {

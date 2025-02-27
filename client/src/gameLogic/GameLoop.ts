@@ -55,13 +55,7 @@ export const GameLoop = ({
 
     intervalCounter.current += 1;
 
-    if (
-      isConnected &&
-      worker.current &&
-      (Math.abs(playerPosition.dx) >= 0.1 ||
-        Math.abs(playerPosition.dy) >= 0.1 ||
-        intervalCounter.current % 20 == 0)
-    ) {
+    if (isConnected && worker.current) {
       worker.current.postMessage({
         type: "send",
         payload: {
