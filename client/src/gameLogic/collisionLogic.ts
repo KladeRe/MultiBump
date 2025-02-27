@@ -41,11 +41,14 @@ export const playerCollision = (
   playerRadius: number,
 
 ): { bounceX: number; bounceY: number } => {
-  const dx = (player.x+player.dx) - (opponent.x+opponent.dx);
-  const dy = (player.y+player.dy) - (opponent.y+opponent.dy);
+  const dx = (player.x) - (opponent.x);
+  const dy = (player.y) - (opponent.y);
   const distance = Math.sqrt(dx * dx + dy * dy);
 
+  console.log(distance)
+
   if (distance <= playerRadius * 2) {
+
 
     const relativeVX = player.dx - opponent.dx;
     const relativeVY = player.dy - opponent.dy;

@@ -19,7 +19,13 @@ const RoomMaker = () => {
   }
 
   const createRoom = () => {
-    navigate("/game?room=1234")
+    const str1 = width.toString().padStart(4, '0');
+    const str2 = height.toString().padStart(4, '0');
+
+
+    const random = Math.floor(1000 + Math.random() * 9000).toString();
+
+    navigate(`/game?room=${str1}-${str2}-${random}`)
   }
   return (
     <div>
