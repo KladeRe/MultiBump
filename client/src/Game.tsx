@@ -13,8 +13,8 @@ const Game = () => {
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room") || "1000-0600";
   const parts = roomId.split('-');
-  const width = parseInt(parts[0], 10);
-  const height = parseInt(parts[1], 10);
+  const width = parseInt(window.atob(parts[0]), 10) / 4;
+  const height = parseInt(window.atob(parts[1]), 10) / 4;
   const [playArea] = useState<Coordinates2D>({ x: width, y: height });
   const playerRadius = 25;
 
