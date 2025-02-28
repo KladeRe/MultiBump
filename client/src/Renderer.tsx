@@ -56,7 +56,7 @@ const Renderer = (
             </Stage>
           </div>
 
-          <h1 className="right">Player scores: </h1>
+          <h1 className="right">Player scores: 0/0</h1>
         </div>
 
       </div>

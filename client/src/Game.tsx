@@ -3,17 +3,18 @@ import { connectToWebSocket, socketListen } from "./background/worker-wrapper";
 import { Coordinates2D, PlayerInfo } from "./util/types";
 import { Controls } from "./gameLogic/controls";
 import { GameLoop } from "./gameLogic/GameLoop";
-
+import { useNavigate } from 'react-router-dom';
 import Renderer from "./Renderer";
 
 import './App.css'
 
 const Game = () => {
+  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room") || "1000-0600";
   const parts = roomId.split('-');
-  const width = parseInt(parts[0], 10);
-  const height = parseInt(parts[1], 10);
+  const width = parseInt(window.atob(parts[0]), 10) / 4;
+  const height = parseInt(window.atob(parts[1]), 10) / 4;
   const [playArea] = useState<Coordinates2D>({ x: width, y: height });
   const playerRadius = 25;
 
@@ -43,18 +44,23 @@ const Game = () => {
 
   const worker = useRef<Worker | null>(null);
 
+
+
   useEffect(() => {
+    const redirectToFullRoom = () => {
+      navigate(`/fullRoom`);
+    }
     worker.current = new Worker(new URL("./background/socket-worker.ts", import.meta.url));
 
     connectToWebSocket(roomId, setIsConnected, worker as React.MutableRefObject<Worker>);
 
-    socketListen(setOpponentPosition, setLastActive, worker.current);
+    socketListen(setOpponentPosition, setLastActive, worker.current, redirectToFullRoom);
 
     return () => {
       worker.current?.postMessage({ type: "close" });
       worker.current?.terminate();
     };
-  }, [roomId]);
+  }, [navigate, roomId]);
 
   useEffect(() => {
     const controls = new Controls(playerPosition, playerRadius, isDragging, setLineEnd, setPlayerPosition, initialMousePos);
