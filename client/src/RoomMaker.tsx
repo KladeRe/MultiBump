@@ -34,19 +34,23 @@ const RoomMaker = () => {
     <div>
       <h1>Room creator</h1>
 
-      <div className="slider-container">
-        <span className="slider-value">Single Player: {singlePlayer ? 'On' : 'Off'}</span>
-        <label className="switch">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', margin: '10px 0' }}>
+        <span>Single player:</span>
+        <div className="button r" id="button-3">
           <input
-        type="checkbox"
-        checked={singlePlayer}
-        onChange={(e) => setSinglePlayer(e.target.checked)}
+            type="checkbox"
+            className="checkbox"
+            checked={singlePlayer}
+            onChange={(e) => setSinglePlayer(e.target.checked)}
           />
-          <span className="switch-slider"></span>
-        </label>
+          <div className="knobs"></div>
+          <div className="layer"></div>
+        </div>
+      </div>
 
+
+      <div className="slider-container">
         <span className="slider-value">Width: {width}</span>
-
         <input
           type="range"
           id="slider"
