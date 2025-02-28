@@ -54,7 +54,7 @@ initialMousePos: React.MutableRefObject<Coordinates2D>
 
       const innerProduct = Math.sqrt(dx*dx + dy*dy);
 
-      let multiplier = -0.01;
+      let multiplier = -0.005;
 
       if (innerProduct > this.playerRadius) {
         multiplier *= this.playerRadius / innerProduct;
