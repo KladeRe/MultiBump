@@ -28,14 +28,20 @@ const RoomMaker = () => {
 
     const random = Math.floor(1000 + Math.random() * 9000).toString();
 
-    navigate(`/game?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`)
+    if (singlePlayer == true) {
+      navigate(`/simulation?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+    } else {
+      navigate(`/game?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+    }
+
+
   }
   return (
     <div>
       <h1>Room creator</h1>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', margin: '10px 0' }}>
-        <span>Single player:</span>
+        <span className="slider-value">Single Player</span>
         <div className="button r" id="button-3">
           <input
             type="checkbox"
