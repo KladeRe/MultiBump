@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import './RoomMaker.css';
 
 const RoomMaker = () => {
   const navigate = useNavigate();
   const [width, setWidth] = useState<number>(Math.round(window.innerWidth * 0.75));
   const [height, setHeight] = useState<number>(Math.round(window.innerHeight * 0.75));
+
+  const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
 
   const backToLogin = () => {
     navigate("/login");
@@ -30,9 +33,18 @@ const RoomMaker = () => {
   return (
     <div>
       <h1>Room creator</h1>
-      <p>Coming soon!</p>
-      <button onClick={backToLogin}>Back to room login</button>
+
       <div className="slider-container">
+        <span className="slider-value">Single Player: {singlePlayer ? 'On' : 'Off'}</span>
+        <label className="switch">
+          <input
+        type="checkbox"
+        checked={singlePlayer}
+        onChange={(e) => setSinglePlayer(e.target.checked)}
+          />
+          <span className="switch-slider"></span>
+        </label>
+
         <span className="slider-value">Width: {width}</span>
 
         <input
@@ -44,9 +56,7 @@ const RoomMaker = () => {
           onChange={handleWidthChange}
           className="slider"
         />
-      </div>
 
-      <div className="slider-container">
         <span className="slider-value">Height: {height}</span>
 
         <input
@@ -59,7 +69,10 @@ const RoomMaker = () => {
           className="slider"
         />
       </div>
-      <button onClick={createRoom}>Create Room</button>
+      <div className="button-container">
+        <button onClick={createRoom}>Create Room</button>
+        <button onClick={backToLogin}>Back to room login</button>
+      </div>
     </div>
   );
 };
