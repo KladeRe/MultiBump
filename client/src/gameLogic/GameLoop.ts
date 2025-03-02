@@ -75,3 +75,43 @@ export const GameLoop = ({
 
   return interval;
 }
+
+export const singlePlayerGameLoop = ({
+  playerRadius,
+  playArea,
+  intervalCounter,
+  setPlayerPosition,
+}: {
+  playerRadius: number,
+  playArea: Coordinates2D,
+  intervalCounter: React.MutableRefObject<number>,
+  setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>,
+}): NodeJS.Timeout => {
+  const interval = setInterval(() => {
+    setPlayerPosition((prev) => {
+
+      const nextX = prev.x + prev.dx;
+      const nextY = prev.y + prev.dy;
+      const nextDx =
+        nextX <= playerRadius || nextX >= playArea.x - playerRadius
+          ? prev.dx * -0.8
+          : prev.dx;
+      const nextDy =
+        nextY <= playerRadius || nextY >= playArea.y - playerRadius
+          ? prev.dy * -0.8
+          : prev.dy;
+
+      return {
+        x: Math.min(Math.max(nextX, playerRadius), playArea.x - playerRadius),
+        y: Math.min(Math.max(nextY, playerRadius), playArea.y - playerRadius),
+        dx: nextDx * 0.95,
+        dy: nextDy * 0.95,
+      };
+    });
+
+    intervalCounter.current += 1;
+
+  }, 8);
+
+  return interval;
+}

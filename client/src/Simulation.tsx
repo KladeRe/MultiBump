@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { PlayerInfo, Coordinates2D } from "./util/types";
 import { Controls } from "./gameLogic/controls";
 import Renderer from "./Renderer";
+import { singlePlayerGameLoop } from "./gameLogic/GameLoop";
+
 const Simulation = () => {
 
   const params = new URLSearchParams(window.location.search);
@@ -29,6 +31,8 @@ const Simulation = () => {
   const initialMousePos = useRef<Coordinates2D>({ x: 0, y: 0 });
   const isDragging = useRef<boolean>(false);
 
+  const intervalCounter = useRef<number>(0);
+
   useEffect(() => {
       const controls = new Controls(playerPosition, playerRadius, isDragging, setLineEnd, setPlayerPosition, initialMousePos);
       controls.addListeners();
@@ -37,6 +41,20 @@ const Simulation = () => {
         controls.removeListeners();
       };
   }, [playerPosition]);
+
+  useEffect(() => {
+      const interval = singlePlayerGameLoop({playerRadius,
+        playArea,
+        intervalCounter,
+        setPlayerPosition})
+
+      return () => {
+        clearInterval(interval);
+      };
+    }, [opponentPosition, playArea, playArea.x, playArea.y, playerPosition, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
+
+
+
 
   return (
     <Renderer roomId={roomId} playArea={playArea} isDragging={isDragging} playerPosition={playerPosition} lineEnd={lineEnd} playerRadius={playerRadius} opponentPosition={opponentPosition}/>
