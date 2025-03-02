@@ -65,12 +65,23 @@ const Renderer = (
 
 
         </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center', // Changed from 'center' to 'space-between'
+          width: '100%', // Added to ensure full width
+          margin: '20px 0'
+        }}>
 
-        <h1 className="left">Room Id: {roomId}</h1>
+          <h1 className="left">Room Id: {roomId}</h1>
 
-        <h1 className="right">Player scores: 0/0</h1>
+          <button className="button-warning" onClick={backToHome}>Exit game</button>
 
-        <button className="button-warning" onClick={backToHome}>Exit game</button>
+          <h1 className="right">Player scores: 0/0</h1>
+        </div>
+
+
 
       </div>
 
