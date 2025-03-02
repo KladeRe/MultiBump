@@ -9,6 +9,12 @@ const RoomMaker = () => {
 
   const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
 
+  const [selectedColor, setSelectedColor] = useState<string>('#ffffff');
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedColor(event.target.value);
+  };
+
   const backToLogin = () => {
     navigate("/login");
   };
@@ -52,6 +58,15 @@ const RoomMaker = () => {
           <div className="knobs"></div>
           <div className="layer"></div>
         </div>
+      </div>
+
+      <div className="color-picker">
+        <input
+          type="color"
+          value={selectedColor}
+          onChange={handleColorChange}
+          className="color-input"
+        />
       </div>
 
 
