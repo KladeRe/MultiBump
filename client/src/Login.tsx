@@ -18,7 +18,7 @@ const Login = () => {
 
   return (
     <div className="container">
-      <h1>Join a Room</h1>
+      <h1>Welcome to multiBump</h1>
       <input
         type="text"
         value={roomCode}

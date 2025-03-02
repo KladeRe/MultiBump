@@ -11,7 +11,7 @@ import './App.css'
 const Game = () => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
-  const roomId = params.get("room") || "1000-0600";
+  const roomId = params.get("room") || "NTc2MA-Mjc4MA";
   const parts = roomId.split('-');
   const width = parseInt(window.atob(parts[0]), 10) / 4;
   const height = parseInt(window.atob(parts[1]), 10) / 4;

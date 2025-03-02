@@ -1,5 +1,6 @@
 import { Coordinates2D, PlayerInfo } from "./util/types";
 import { Stage, Graphics } from "@pixi/react";
+import { useNavigate } from 'react-router-dom';
 
 const Renderer = (
   {
@@ -21,10 +22,16 @@ const Renderer = (
   }
 ) => {
 
+  const navigate = useNavigate();
+
+  const backToHome = () => {
+    navigate("/login");
+  }
+
   return (
       <div className="container">
         <div className="stage-wrapper">
-          <h1 className="left">Room Id: {roomId}</h1>
+
           <div className="stage">
             <Stage
               width={playArea.x}
@@ -56,8 +63,25 @@ const Renderer = (
             </Stage>
           </div>
 
+
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center', // Changed from 'center' to 'space-between'
+          width: '100%', // Added to ensure full width
+          margin: '20px 0'
+        }}>
+
+          <h1 className="left">Room Id: {roomId}</h1>
+
+          <button className="button-warning" onClick={backToHome}>Exit game</button>
+
           <h1 className="right">Player scores: 0/0</h1>
         </div>
+
+
 
       </div>
 

@@ -63,3 +63,9 @@ h1 {
   width: 100px;
 }
 
+.left,
+.right {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+

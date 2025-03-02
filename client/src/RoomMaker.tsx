@@ -1,10 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import './RoomMaker.css';
 
 const RoomMaker = () => {
   const navigate = useNavigate();
   const [width, setWidth] = useState<number>(Math.round(window.innerWidth * 0.75));
   const [height, setHeight] = useState<number>(Math.round(window.innerHeight * 0.75));
+
+  const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
+
+  const [playerColor, setPlayerColor] = useState<string>('#ff0000');
+
+  const [opponentColor, setOpponentColor] = useState<string>('#006400');
+
+  const [backgroundColor, setBackgroundColor] = useState<string>('#1099bb');
+
+
+
+  const handlePlayerColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlayerColor(event.target.value);
+  };
+
+  const handleOpponentColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOpponentColor(event.target.value);
+  };
+
+  const handleBackgroundColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBackgroundColor(event.target.value);
+  };
 
   const backToLogin = () => {
     navigate("/login");
@@ -25,16 +48,73 @@ const RoomMaker = () => {
 
     const random = Math.floor(1000 + Math.random() * 9000).toString();
 
-    navigate(`/game?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`)
+    if (singlePlayer == true) {
+      navigate(`/simulation?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+    } else {
+      navigate(`/game?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+    }
+
+
   }
   return (
     <div>
       <h1>Room creator</h1>
-      <p>Coming soon!</p>
-      <button onClick={backToLogin}>Back to room login</button>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', margin: '10px 0' }}>
+        <span className="slider-value">Single Player</span>
+        <div className="button r" id="button-3">
+          <input
+            type="checkbox"
+            className="checkbox"
+            checked={singlePlayer}
+            onChange={(e) => setSinglePlayer(e.target.checked)}
+          />
+          <div className="knobs"></div>
+          <div className="layer"></div>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '20px',
+        justifyContent: 'center',
+        margin: '20px 0'
+      }}>
+        <div className="color-picker">
+          <p>Player color</p>
+          <input
+            type="color"
+            value={playerColor}
+            onChange={handlePlayerColorChange}
+            className="color-input"
+          />
+        </div>
+        <div className="color-picker">
+          <p>Opponent color</p>
+          <input
+            type="color"
+            value={opponentColor}
+            onChange={handleOpponentColorChange}
+            className="color-input"
+          />
+        </div>
+        <div className="color-picker">
+          <p>Background color</p>
+          <input
+            type="color"
+            value={backgroundColor}
+            onChange={handleBackgroundColorChange}
+            className="color-input"
+          />
+        </div>
+
+      </div>
+
+
+
       <div className="slider-container">
         <span className="slider-value">Width: {width}</span>
-
         <input
           type="range"
           id="slider"
@@ -44,9 +124,7 @@ const RoomMaker = () => {
           onChange={handleWidthChange}
           className="slider"
         />
-      </div>
 
-      <div className="slider-container">
         <span className="slider-value">Height: {height}</span>
 
         <input
@@ -59,7 +137,10 @@ const RoomMaker = () => {
           className="slider"
         />
       </div>
-      <button onClick={createRoom}>Create Room</button>
+      <div className="button-container">
+        <button onClick={createRoom}>Create Room</button>
+        <button onClick={backToLogin}>Back to room login</button>
+      </div>
     </div>
   );
 };
