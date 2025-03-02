@@ -7,7 +7,7 @@ import { singlePlayerGameLoop } from "./gameLogic/GameLoop";
 const Simulation = () => {
 
   const params = new URLSearchParams(window.location.search);
-  const roomId = params.get("room") || "1000-0600";
+  const roomId = params.get("room") || "NTc2MA-Mjc4MA";
   const parts = roomId.split('-');
   const width = parseInt(window.atob(parts[0]), 10) / 4;
   const height = parseInt(window.atob(parts[1]), 10) / 4;
@@ -52,10 +52,6 @@ const Simulation = () => {
         clearInterval(interval);
       };
     }, [opponentPosition, playArea, playArea.x, playArea.y, playerPosition, playerPosition.dx, playerPosition.dy, playerPosition.x, playerPosition.y]);
-
-
-
-
   return (
     <Renderer roomId={roomId} playArea={playArea} isDragging={isDragging} playerPosition={playerPosition} lineEnd={lineEnd} playerRadius={playerRadius} opponentPosition={opponentPosition}/>
   )
