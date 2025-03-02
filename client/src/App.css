@@ -50,6 +50,14 @@ button {
   background-color: #218838;
 }
 
+.button-warning {
+  background-color: #c74040;
+}
+
+.button-warning:hover {
+  background-color: #961212;
+}
+
 .slider {
   margin-left: 10px;
 }
