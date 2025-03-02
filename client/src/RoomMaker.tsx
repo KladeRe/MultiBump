@@ -9,10 +9,24 @@ const RoomMaker = () => {
 
   const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
 
-  const [selectedColor, setSelectedColor] = useState<string>('#ffffff');
+  const [playerColor, setPlayerColor] = useState<string>('#ff0000');
 
-  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedColor(event.target.value);
+  const [opponentColor, setOpponentColor] = useState<string>('#006400');
+
+  const [backgroundColor, setBackgroundColor] = useState<string>('#1099bb');
+
+
+
+  const handlePlayerColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlayerColor(event.target.value);
+  };
+
+  const handleOpponentColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOpponentColor(event.target.value);
+  };
+
+  const handleBackgroundColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBackgroundColor(event.target.value);
   };
 
   const backToLogin = () => {
@@ -59,15 +73,44 @@ const RoomMaker = () => {
           <div className="layer"></div>
         </div>
       </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '20px',
+        justifyContent: 'center',
+        margin: '20px 0'
+      }}>
+        <div className="color-picker">
+          <p>Player color</p>
+          <input
+            type="color"
+            value={playerColor}
+            onChange={handlePlayerColorChange}
+            className="color-input"
+          />
+        </div>
+        <div className="color-picker">
+          <p>Opponent color</p>
+          <input
+            type="color"
+            value={opponentColor}
+            onChange={handleOpponentColorChange}
+            className="color-input"
+          />
+        </div>
+        <div className="color-picker">
+          <p>Background color</p>
+          <input
+            type="color"
+            value={backgroundColor}
+            onChange={handleBackgroundColorChange}
+            className="color-input"
+          />
+        </div>
 
-      <div className="color-picker">
-        <input
-          type="color"
-          value={selectedColor}
-          onChange={handleColorChange}
-          className="color-input"
-        />
       </div>
+
 
 
       <div className="slider-container">
