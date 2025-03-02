@@ -10,7 +10,7 @@ vi.mock('react-router-dom', () => ({
 describe('Login component', () => {
   it('should include expected text', async () => {
     render(<Login/>);
-    expect(screen.getByText('Join a Room')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to multiBump')).toBeInTheDocument();
   });
   it('should include all buttons', async () => {
     render(<Login />);
