@@ -60,7 +60,7 @@ const RoomMaker = () => {
     <div>
       <h1>Room creator</h1>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', margin: '10px 0' }}>
+      <div className="switch-container">
         <span className="slider-value">Single Player</span>
         <div className="button r" id="button-3">
           <input
@@ -73,14 +73,7 @@ const RoomMaker = () => {
           <div className="layer"></div>
         </div>
       </div>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: '20px',
-        justifyContent: 'center',
-        margin: '20px 0'
-      }}>
+      <div className="color-selector-container">
         <div className="color-picker">
           <p>Player color</p>
           <input
