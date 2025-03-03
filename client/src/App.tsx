@@ -1,12 +1,12 @@
 import './App.css';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Game from './Game';
-import Login from './Login';
-import RoomMaker from './RoomMaker';
-import RoomFull from './RoomFull';
-import Simulation from './Simulation';
-import Spinner from './Spinner';
+import Game from './games/Game';
+import Login from './menus/Login';
+import RoomMaker from './menus/RoomMaker';
+import RoomFull from './menus/RoomFull';
+import Simulation from './games/Simulation';
+import Spinner from './util/Spinner';
 const App = () => {
   return (
     <Routes>

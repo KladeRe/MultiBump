@@ -1,4 +1,4 @@
-import { Coordinates2D, PlayerInfo } from "./util/types";
+import { Coordinates2D, PlayerInfo } from "./types";
 import { Stage, Graphics } from "@pixi/react";
 import { useNavigate } from 'react-router-dom';
 

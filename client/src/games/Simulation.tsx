@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { PlayerInfo, Coordinates2D } from "./util/types";
-import { Controls } from "./gameLogic/controls";
-import Renderer from "./Renderer";
-import { singlePlayerGameLoop } from "./gameLogic/GameLoop";
+import { PlayerInfo, Coordinates2D } from "../util/types";
+import { Controls } from "../gameLogic/controls";
+import Renderer from "../util/Renderer";
+import { singlePlayerGameLoop } from "../gameLogic/GameLoop";
 
 const Simulation = () => {
 

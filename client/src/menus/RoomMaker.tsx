@@ -9,26 +9,6 @@ const RoomMaker = () => {
 
   const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
 
-  const [playerColor, setPlayerColor] = useState<string>('#ff0000');
-
-  const [opponentColor, setOpponentColor] = useState<string>('#006400');
-
-  const [backgroundColor, setBackgroundColor] = useState<string>('#1099bb');
-
-
-
-  const handlePlayerColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPlayerColor(event.target.value);
-  };
-
-  const handleOpponentColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOpponentColor(event.target.value);
-  };
-
-  const handleBackgroundColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBackgroundColor(event.target.value);
-  };
-
   const backToLogin = () => {
     navigate("/login");
   };
@@ -73,36 +53,7 @@ const RoomMaker = () => {
           <div className="layer"></div>
         </div>
       </div>
-      <div className="color-selector-container">
-        <div className="color-picker">
-          <p>Player color</p>
-          <input
-            type="color"
-            value={playerColor}
-            onChange={handlePlayerColorChange}
-            className="color-input"
-          />
-        </div>
-        <div className="color-picker">
-          <p>Opponent color</p>
-          <input
-            type="color"
-            value={opponentColor}
-            onChange={handleOpponentColorChange}
-            className="color-input"
-          />
-        </div>
-        <div className="color-picker">
-          <p>Background color</p>
-          <input
-            type="color"
-            value={backgroundColor}
-            onChange={handleBackgroundColorChange}
-            className="color-input"
-          />
-        </div>
 
-      </div>
 
 
 

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { connectToWebSocket, socketListen } from "./background/worker-wrapper";
-import { Coordinates2D, PlayerInfo } from "./util/types";
-import { Controls } from "./gameLogic/controls";
-import { GameLoop } from "./gameLogic/GameLoop";
+import { connectToWebSocket, socketListen } from "../background/worker-wrapper";
+import { Coordinates2D, PlayerInfo } from "../util/types";
+import { Controls } from "../gameLogic/controls";
+import { GameLoop } from "../gameLogic/GameLoop";
 import { useNavigate } from 'react-router-dom';
-import Renderer from "./Renderer";
+import Renderer from "../util/Renderer";
 
-import './App.css'
+import './../App.css'
 
 const Game = () => {
   const navigate = useNavigate();

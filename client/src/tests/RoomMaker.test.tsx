@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import RoomMaker from '../RoomMaker';
+import RoomMaker from '../menus/RoomMaker';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
