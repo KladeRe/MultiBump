@@ -6,8 +6,6 @@ import { GameLoop } from "../gameLogic/GameLoop";
 import { useNavigate } from 'react-router-dom';
 import Renderer from "../util/Renderer";
 
-import './../App.css'
-
 const Game = () => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);

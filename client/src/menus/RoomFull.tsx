@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import './../App.css'
 
 const RoomFull = () => {
   const navigate = useNavigate();
