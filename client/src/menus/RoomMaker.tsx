@@ -39,7 +39,7 @@ const RoomMaker = () => {
       navigate(`/simulation?room=${gameID}`);
     } else {
       navigate(
-        `/game?room=${gameID}-${window.btoa(random).replace(/=+$/, "")}`
+        `/loader?room=${gameID}-${window.btoa(random).replace(/=+$/, "")}`
       );
     }
   };
