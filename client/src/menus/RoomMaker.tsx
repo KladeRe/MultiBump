@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import './RoomMaker.css';
+import "./RoomMaker.css";
 
 const RoomMaker = () => {
   const navigate = useNavigate();
-  const [width, setWidth] = useState<number>(Math.round(window.innerWidth * 0.75));
-  const [height, setHeight] = useState<number>(Math.round(window.innerHeight * 0.75));
+  const [width, setWidth] = useState<number>(
+    Math.round(window.innerWidth * 0.75)
+  );
+  const [height, setHeight] = useState<number>(
+    Math.round(window.innerHeight * 0.75)
+  );
 
   const [singlePlayer, setSinglePlayer] = useState<boolean>(false);
 
@@ -19,23 +23,26 @@ const RoomMaker = () => {
 
   const handleHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeight(Number(event.target.value));
-  }
+  };
 
   const createRoom = () => {
-    const str1 = (width*4).toString().padStart(4, '0');
-    const str2 = (height*4).toString().padStart(4, '0');
-
+    const widthEncoding = (width * 4).toString().padStart(4, "0");
+    const heightEncoding = (height * 4).toString().padStart(4, "0");
 
     const random = Math.floor(1000 + Math.random() * 9000).toString();
 
+    const gameID = `${window.btoa(widthEncoding).replace(/=+$/, "")}-${window
+      .btoa(heightEncoding)
+      .replace(/=+$/, "")}`;
+
     if (singlePlayer == true) {
-      navigate(`/simulation?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+      navigate(`/simulation?room=${gameID}`);
     } else {
-      navigate(`/game?room=${window.btoa(str1).replace(/=+$/, '')}-${window.btoa(str2).replace(/=+$/, '')}-${window.btoa(random).replace(/=+$/, '')}`);
+      navigate(
+        `/game?room=${gameID}-${window.btoa(random).replace(/=+$/, "")}`
+      );
     }
-
-
-  }
+  };
   return (
     <div>
       <h1>Room creator</h1>
@@ -53,9 +60,6 @@ const RoomMaker = () => {
           <div className="layer"></div>
         </div>
       </div>
-
-
-
 
       <div className="slider-container">
         <span className="slider-value">Width: {width}</span>

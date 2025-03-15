@@ -11,25 +11,29 @@ export const GameLoop = ({
   opponentPosition,
   lastActive,
   setPlayerPosition,
-  setOpponentPosition
+  setOpponentPosition,
 }: {
-  playerRadius: number,
-  playArea: Coordinates2D,
-  intervalCounter: React.MutableRefObject<number>,
-  isConnected: boolean,
-  worker: React.MutableRefObject<Worker | null>,
-  playerPosition: PlayerInfo,
-  opponentPosition: PlayerInfo | null,
-  lastActive: Date,
-  setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>,
-  setOpponentPosition: React.Dispatch<React.SetStateAction<PlayerInfo | null>>
+  playerRadius: number;
+  playArea: Coordinates2D;
+  intervalCounter: React.MutableRefObject<number>;
+  isConnected: boolean;
+  worker: React.MutableRefObject<Worker | null>;
+  playerPosition: PlayerInfo;
+  opponentPosition: PlayerInfo | null;
+  lastActive: Date;
+  setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>;
+  setOpponentPosition: React.Dispatch<React.SetStateAction<PlayerInfo | null>>;
 }): NodeJS.Timeout => {
   const interval = setInterval(() => {
     setPlayerPosition((prev) => {
       let bounceX = 0;
       let bounceY = 0;
       if (opponentPosition) {
-        const collisionResult = playerCollision(playerPosition, opponentPosition, playerRadius);
+        const collisionResult = playerCollision(
+          playerPosition,
+          opponentPosition,
+          playerRadius
+        );
 
         bounceX = collisionResult.bounceX;
         bounceY = collisionResult.bounceY;
@@ -39,11 +43,11 @@ export const GameLoop = ({
       const nextDx =
         nextX <= playerRadius || nextX >= playArea.x - playerRadius
           ? prev.dx * -0.8
-          : prev.dx + 2*bounceX;
+          : prev.dx + 2 * bounceX;
       const nextDy =
         nextY <= playerRadius || nextY >= playArea.y - playerRadius
           ? prev.dy * -0.8
-          : prev.dy + 2*bounceY;
+          : prev.dy + 2 * bounceY;
 
       return {
         x: Math.min(Math.max(nextX, playerRadius), playArea.x - playerRadius),
@@ -61,8 +65,8 @@ export const GameLoop = ({
         payload: {
           x: playArea.x - playerPosition.x,
           y: playArea.y - playerPosition.y,
-          dx: -1*playerPosition.dx,
-          dy: -1*playerPosition.dy,
+          dx: -1 * playerPosition.dx,
+          dy: -1 * playerPosition.dy,
         },
       });
 
@@ -74,7 +78,7 @@ export const GameLoop = ({
   }, 8);
 
   return interval;
-}
+};
 
 export const singlePlayerGameLoop = ({
   playerRadius,
@@ -82,14 +86,13 @@ export const singlePlayerGameLoop = ({
   intervalCounter,
   setPlayerPosition,
 }: {
-  playerRadius: number,
-  playArea: Coordinates2D,
-  intervalCounter: React.MutableRefObject<number>,
-  setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>,
+  playerRadius: number;
+  playArea: Coordinates2D;
+  intervalCounter: React.MutableRefObject<number>;
+  setPlayerPosition: React.Dispatch<React.SetStateAction<PlayerInfo>>;
 }): NodeJS.Timeout => {
   const interval = setInterval(() => {
     setPlayerPosition((prev) => {
-
       const nextX = prev.x + prev.dx;
       const nextY = prev.y + prev.dy;
       const nextDx =
@@ -110,8 +113,7 @@ export const singlePlayerGameLoop = ({
     });
 
     intervalCounter.current += 1;
-
   }, 8);
 
   return interval;
-}
+};
