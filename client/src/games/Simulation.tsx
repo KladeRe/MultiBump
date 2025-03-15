@@ -3,8 +3,10 @@ import { PlayerInfo, Coordinates2D } from "../util/types";
 import { Controls } from "../gameLogic/controls";
 import Renderer from "../util/Renderer";
 import { singlePlayerGameLoop } from "../gameLogic/GameLoop";
+import { useNavigate } from "react-router-dom";
 
 const Simulation = () => {
+  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room") || "NTc2MA-Mjc4MA";
   const parts = roomId.split("-");
@@ -31,6 +33,10 @@ const Simulation = () => {
   const isDragging = useRef<boolean>(false);
 
   const intervalCounter = useRef<number>(0);
+
+  const backToHome = () => {
+    navigate("/login");
+  };
 
   useEffect(() => {
     const controls = new Controls(
@@ -79,6 +85,7 @@ const Simulation = () => {
       lineEnd={lineEnd}
       playerRadius={playerRadius}
       opponentPosition={opponentPosition}
+      loginRedirect={backToHome}
     />
   );
 };

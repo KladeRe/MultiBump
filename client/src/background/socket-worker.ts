@@ -74,6 +74,11 @@ const connect = (url: string) => {
           type: "roomFull",
           payload: "Left room because full",
         });
+      } else if (type === "opponentLeft") {
+        self.postMessage({
+          type: "opponentLeft",
+          payload: "Opponent left room",
+        });
       } else if (type === "error") {
         console.error("Error occurred");
         console.log(payload);

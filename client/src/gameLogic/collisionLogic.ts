@@ -49,7 +49,7 @@ export const playerCollision = (
   const dy = player.y - opponent.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  console.log(distance);
+  //console.log(distance);
 
   if (distance <= playerRadius * 2) {
     const relativeVX = player.dx - opponent.dx;
@@ -61,7 +61,7 @@ export const playerCollision = (
     const relativeVelocityNormal = relativeVX * normalX + relativeVY * normalY;
 
     if (relativeVelocityNormal < 0) {
-      console.log("Reacted");
+      //console.log("Reacted");
       const bounceX = -relativeVelocityNormal * normalX;
       const bounceY = -relativeVelocityNormal * normalY;
       return { bounceX, bounceY };

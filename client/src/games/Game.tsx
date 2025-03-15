@@ -42,12 +42,23 @@ const Game = () => {
 
   const worker = useRef<Worker | null>(null);
 
+  const backToHome = () => {
+    if (worker.current) {
+      worker.current.postMessage({
+        type: "close",
+        payload: {},
+      });
+    }
+
+    navigate("/login");
+  };
+
   useEffect(() => {
     const redirectToFullRoom = () => {
       navigate(`/fullRoom`);
     };
     worker.current = new Worker(
-      new URL("./background/socket-worker.ts", import.meta.url)
+      new URL("./../background/socket-worker.ts", import.meta.url)
     );
 
     connectToWebSocket(
@@ -56,11 +67,23 @@ const Game = () => {
       worker as React.MutableRefObject<Worker>
     );
 
+    const backToLogin = () => {
+      if (worker.current) {
+        worker.current.postMessage({
+          type: "close",
+          payload: {},
+        });
+      }
+
+      navigate("/login");
+    };
+
     socketListen(
       setOpponentPosition,
       setLastActive,
       worker.current,
-      redirectToFullRoom
+      redirectToFullRoom,
+      backToLogin
     );
 
     return () => {
@@ -125,6 +148,7 @@ const Game = () => {
       lineEnd={lineEnd}
       playerRadius={playerRadius}
       opponentPosition={opponentPosition}
+      loginRedirect={backToHome}
     />
   );
 };

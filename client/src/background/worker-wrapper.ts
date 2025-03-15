@@ -24,7 +24,8 @@ export const socketListen = async (
   setOpponentPosition: (value: React.SetStateAction<PlayerInfo | null>) => void,
   setLastActive: (value: React.SetStateAction<Date>) => void,
   worker: Worker,
-  redirectToFullRoom: () => void
+  redirectToFullRoom: () => void,
+  redirectToLogin: () => void
 ): Promise<void> => {
   worker.onmessage = (event) => {
     const { type, payload } = event.data;
@@ -46,6 +47,9 @@ export const socketListen = async (
       console.log("WebSocket disconnected");
     } else if (type === "roomFull") {
       redirectToFullRoom();
+    } else if (type == "opponentLeft") {
+      console.log("Received opponent leaving message");
+      redirectToLogin();
     } else if (type === "error") {
       console.log("WebSocket error:", payload);
     }
