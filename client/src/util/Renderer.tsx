@@ -1,4 +1,4 @@
-import { Coordinates2D, PlayerInfo } from "./util/types";
+import { Coordinates2D, PlayerInfo } from "./types";
 import { Stage, Graphics } from "@pixi/react";
 import { useNavigate } from 'react-router-dom';
 
@@ -65,14 +65,7 @@ const Renderer = (
 
 
         </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center', // Changed from 'center' to 'space-between'
-          width: '100%', // Added to ensure full width
-          margin: '20px 0'
-        }}>
+        <div className="middle_in_center">
 
           <h1 className="left">Room Id: {roomId}</h1>
 
