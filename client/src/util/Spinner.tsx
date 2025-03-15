@@ -1,23 +1,29 @@
-import styles from './Spinner.module.css';
+import styles from "./Spinner.module.css";
 
 interface SpinnerProps {
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   primaryColor?: string;
   secondaryColor?: string;
 }
 
 const Spinner: React.FC<SpinnerProps> = ({
-  size = 'medium',
-  primaryColor = '#372cac',
-  secondaryColor = '#7c7efa'
+  size = "medium",
+  primaryColor = "#372cac",
+  secondaryColor = "#7c7efa",
 }) => {
   return (
     <div
       className={`${styles.spinner} ${styles[size]}`}
-      style={{
-        '--primary-color': primaryColor,
-        '--secondary-color': secondaryColor,
-      } as React.CSSProperties}
+      style={
+        {
+          "--primary-color": primaryColor,
+          "--secondary-color": secondaryColor,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "auto",
+        } as React.CSSProperties
+      }
       role="status"
       aria-label="Loading"
     >

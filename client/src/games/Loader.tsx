@@ -1,5 +1,12 @@
+import Spinner from "../util/Spinner";
+
 const Loader = () => {
-  return <h1>Loader</h1>;
+  return (
+    <div className="loader-container">
+      <Spinner />
+      <p>Waiting for other player</p>
+    </div>
+  );
 };
 
 export default Loader;
