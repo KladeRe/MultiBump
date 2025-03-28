@@ -25,11 +25,15 @@ wss.on("connection", (ws) => {
         if (
           typeof playerPosition.x === "number" &&
           typeof playerPosition.y === "number" &&
-          typeof playerPosition.dy === "number" &&
-          currentRoom
+          typeof playerPosition.dy === "number"
         ) {
-          rooms[currentRoom].forEach((client) => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
+          wss.clients.forEach((client) => {
+            if (
+              client !== ws &&
+              client.readyState === WebSocket.OPEN &&
+              currentRoom &&
+              rooms[currentRoom].has(client)
+            ) {
               client.send(
                 JSON.stringify({ type: "coordinates", payload: playerPosition })
               );
@@ -51,7 +55,13 @@ wss.on("connection", (ws) => {
         }
         rooms[room].add(ws);
         currentRoom = room;
-        ws.send(JSON.stringify({ type: "joined", payload: room }));
+        if (rooms[room].size == 2) {
+          rooms[room].forEach((client) =>
+            client.send(JSON.stringify({ type: "allJoined", payload: room }))
+          );
+        } else {
+          ws.send(JSON.stringify({ type: "joined", payload: room }));
+        }
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : "Unknown error";
