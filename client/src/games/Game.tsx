@@ -5,6 +5,7 @@ import { Controls } from "../gameLogic/controls";
 import { GameLoop } from "../gameLogic/GameLoop";
 import { useNavigate } from "react-router-dom";
 import Renderer from "../util/Renderer";
+import { getSocketWorker, terminateSocketWorker } from "../util/workerUtil";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -57,9 +58,7 @@ const Game = () => {
     const redirectToFullRoom = () => {
       navigate(`/fullRoom`);
     };
-    worker.current = new Worker(
-      new URL("./../background/socket-worker.ts", import.meta.url)
-    );
+    worker.current = getSocketWorker();
 
     connectToWebSocket(
       roomId,
@@ -88,7 +87,7 @@ const Game = () => {
 
     return () => {
       worker.current?.postMessage({ type: "close" });
-      worker.current?.terminate();
+      terminateSocketWorker();
     };
   }, [navigate, roomId]);
 
