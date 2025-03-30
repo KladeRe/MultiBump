@@ -2,14 +2,12 @@ import { PlayerInfo } from "../util/types";
 
 export const connectToWebSocket = async (
   roomId: string,
-  setIsConnected: (value: React.SetStateAction<boolean>) => void,
   worker: React.MutableRefObject<Worker>
 ) => {
   await new Promise<void>((resolve) => {
     const onConnect = (event: MessageEvent) => {
       if (event.data.type === "connected") {
         worker.current?.removeEventListener("message", onConnect);
-        setIsConnected(true);
         resolve();
       }
     };
@@ -52,6 +50,29 @@ export const socketListen = async (
       redirectToLogin();
     } else if (type === "error") {
       console.log("WebSocket error:", payload);
+    }
+  };
+};
+
+export const waitForOpponent = async (
+  worker: Worker,
+  redirectToGame: () => void,
+  redirectToFullRoom: () => void
+): Promise<void> => {
+  worker.onmessage = (event) => {
+    const { type, payload } = event.data;
+
+    if (type === "connected") {
+      console.log("WebSocket connected");
+    } else if (type === "disconnected") {
+      console.log("WebSocket disconnected");
+    } else if (type === "roomFull") {
+      redirectToFullRoom();
+    } else if (type === "error") {
+      console.log("WebSocket error:", payload);
+    } else if (type === "opponentJoined") {
+      console.log("Opponent joined");
+      redirectToGame();
     }
   };
 };

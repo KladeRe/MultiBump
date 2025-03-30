@@ -5,7 +5,6 @@ export const GameLoop = ({
   playerRadius,
   playArea,
   intervalCounter,
-  isConnected,
   worker,
   playerPosition,
   opponentPosition,
@@ -16,7 +15,6 @@ export const GameLoop = ({
   playerRadius: number;
   playArea: Coordinates2D;
   intervalCounter: React.MutableRefObject<number>;
-  isConnected: boolean;
   worker: React.MutableRefObject<Worker | null>;
   playerPosition: PlayerInfo;
   opponentPosition: PlayerInfo | null;
@@ -59,7 +57,7 @@ export const GameLoop = ({
 
     intervalCounter.current += 1;
 
-    if (isConnected && worker.current) {
+    if (worker.current) {
       worker.current.postMessage({
         type: "send",
         payload: {

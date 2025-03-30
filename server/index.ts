@@ -59,9 +59,9 @@ wss.on("connection", (ws) => {
           rooms[room].forEach((client) =>
             client.send(JSON.stringify({ type: "allJoined", payload: room }))
           );
-        } else {
-          ws.send(JSON.stringify({ type: "joined", payload: room }));
+          return;
         }
+        ws.send(JSON.stringify({ type: "joined", payload: room }));
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : "Unknown error";

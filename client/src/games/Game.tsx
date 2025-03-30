@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { connectToWebSocket, socketListen } from "../background/worker-wrapper";
+import { socketListen } from "../background/worker-wrapper";
 import { Coordinates2D, PlayerInfo } from "../util/types";
 import { Controls } from "../gameLogic/controls";
 import { GameLoop } from "../gameLogic/GameLoop";
@@ -37,7 +37,6 @@ const Game = () => {
   const isDragging = useRef<boolean>(false);
 
   const [lastActive, setLastActive] = useState<Date>(new Date());
-  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const intervalCounter = useRef<number>(0);
 
@@ -60,11 +59,7 @@ const Game = () => {
     };
     worker.current = getSocketWorker();
 
-    connectToWebSocket(
-      roomId,
-      setIsConnected,
-      worker as React.MutableRefObject<Worker>
-    );
+    // connectToWebSocket(roomId, worker as React.MutableRefObject<Worker>);
 
     const backToLogin = () => {
       if (worker.current) {
@@ -112,7 +107,6 @@ const Game = () => {
       playerRadius,
       playArea,
       intervalCounter,
-      isConnected,
       worker,
       playerPosition,
       opponentPosition,
@@ -125,7 +119,6 @@ const Game = () => {
       clearInterval(interval);
     };
   }, [
-    isConnected,
     lastActive,
     opponentPosition,
     playArea,
