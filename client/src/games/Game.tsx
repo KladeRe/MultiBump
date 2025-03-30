@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { connectToWebSocket, socketListen } from "../background/worker-wrapper";
+import { socketListen } from "../background/worker-wrapper";
 import { Coordinates2D, PlayerInfo } from "../util/types";
 import { Controls } from "../gameLogic/controls";
 import { GameLoop } from "../gameLogic/GameLoop";
 import { useNavigate } from "react-router-dom";
 import Renderer from "../util/Renderer";
+import Spinner from "../util/Spinner";
+import {
+  connectToWebSocket,
+  waitForOpponent,
+} from "../background/worker-wrapper";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -36,11 +41,12 @@ const Game = () => {
   const isDragging = useRef<boolean>(false);
 
   const [lastActive, setLastActive] = useState<Date>(new Date());
-  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const intervalCounter = useRef<number>(0);
 
   const worker = useRef<Worker | null>(null);
+
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
 
   const backToHome = () => {
     if (worker.current) {
@@ -55,17 +61,26 @@ const Game = () => {
 
   useEffect(() => {
     const redirectToFullRoom = () => {
+      worker.current?.terminate();
       navigate(`/fullRoom`);
     };
+
     worker.current = new Worker(
       new URL("./../background/socket-worker.ts", import.meta.url)
     );
 
-    connectToWebSocket(
-      roomId,
-      setIsConnected,
-      worker as React.MutableRefObject<Worker>
-    );
+    connectToWebSocket(roomId, worker as React.MutableRefObject<Worker>);
+
+    waitForOpponent(worker.current, setGameStarted, redirectToFullRoom);
+  }, [worker, roomId, navigate]);
+
+  useEffect(() => {
+    if (!gameStarted || !worker.current) return; // Early return if not ready
+
+    console.log("Opponent is there");
+    const redirectToFullRoom = () => {
+      navigate(`/fullRoom`);
+    };
 
     const backToLogin = () => {
       if (worker.current) {
@@ -78,6 +93,7 @@ const Game = () => {
       navigate("/login");
     };
 
+    // Start socket listening when game starts
     socketListen(
       setOpponentPosition,
       setLastActive,
@@ -90,9 +106,10 @@ const Game = () => {
       worker.current?.postMessage({ type: "close" });
       worker.current?.terminate();
     };
-  }, [navigate, roomId]);
+  }, [gameStarted, navigate, roomId]);
 
   useEffect(() => {
+    if (!gameStarted) return;
     const controls = new Controls(
       playerPosition,
       playerRadius,
@@ -106,14 +123,14 @@ const Game = () => {
     return () => {
       controls.removeListeners();
     };
-  }, [playerPosition]);
+  }, [gameStarted, playerPosition]);
 
   useEffect(() => {
+    if (!gameStarted) return;
     const interval = GameLoop({
       playerRadius,
       playArea,
       intervalCounter,
-      isConnected,
       worker,
       playerPosition,
       opponentPosition,
@@ -126,7 +143,6 @@ const Game = () => {
       clearInterval(interval);
     };
   }, [
-    isConnected,
     lastActive,
     opponentPosition,
     playArea,
@@ -137,19 +153,33 @@ const Game = () => {
     playerPosition.dy,
     playerPosition.x,
     playerPosition.y,
+    gameStarted,
   ]);
 
   return (
-    <Renderer
-      roomId={roomId}
-      playArea={playArea}
-      isDragging={isDragging}
-      playerPosition={playerPosition}
-      lineEnd={lineEnd}
-      playerRadius={playerRadius}
-      opponentPosition={opponentPosition}
-      loginRedirect={backToHome}
-    />
+    <>
+      {!gameStarted ? (
+        <div className="loader-container">
+          <Spinner />
+          <p>Waiting for other player</p>
+          <br />
+          <button onClick={backToHome} className="button-primary">
+            Return to login
+          </button>
+        </div>
+      ) : (
+        <Renderer
+          roomId={roomId}
+          playArea={playArea}
+          isDragging={isDragging}
+          playerPosition={playerPosition}
+          lineEnd={lineEnd}
+          playerRadius={playerRadius}
+          opponentPosition={opponentPosition}
+          loginRedirect={backToHome}
+        />
+      )}
+    </>
   );
 };
 

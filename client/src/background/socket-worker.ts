@@ -31,7 +31,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       ) {
         throw new Error("Invalid payload: Expected Position object");
       }
-      // console.log("Sending message")
+      console.log("Sending message");
       if (websocket && websocket.readyState === WebSocket.OPEN) {
         websocket.send(JSON.stringify({ type: "position", payload: payload }));
       }
@@ -40,8 +40,9 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (typeof payload !== "string") {
         throw new Error("Invalid payload: Expected string type");
       }
-      console.log("Joining room");
+      console.log("Checking whether websocket is open");
       if (websocket && websocket.readyState === WebSocket.OPEN) {
+        console.log("Joining room");
         websocket.send(JSON.stringify({ type: "join", payload: payload }));
       }
       break;
@@ -78,6 +79,12 @@ const connect = (url: string) => {
         self.postMessage({
           type: "opponentLeft",
           payload: "Opponent left room",
+        });
+      } else if (type === "allJoined") {
+        console.log("Opponent joined");
+        self.postMessage({
+          type: "opponentJoined",
+          payload: "Opponent joined room",
         });
       } else if (type === "error") {
         console.error("Error occurred");
