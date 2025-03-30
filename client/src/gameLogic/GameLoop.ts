@@ -109,7 +109,7 @@ export const singlePlayerGameLoop = ({
         dy: nextDy * 0.95,
       };
     });
-
+    console.log("New position");
     intervalCounter.current += 1;
   }, 8);
 

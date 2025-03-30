@@ -56,7 +56,7 @@ export const socketListen = async (
 
 export const waitForOpponent = async (
   worker: Worker,
-  redirectToGame: () => void,
+  setGameStarted: (value: React.SetStateAction<boolean>) => void,
   redirectToFullRoom: () => void
 ): Promise<void> => {
   worker.onmessage = (event) => {
@@ -72,7 +72,8 @@ export const waitForOpponent = async (
       console.log("WebSocket error:", payload);
     } else if (type === "opponentJoined") {
       console.log("Opponent joined");
-      redirectToGame();
+      setGameStarted(true);
+      return;
     }
   };
 };

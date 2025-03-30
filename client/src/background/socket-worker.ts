@@ -31,7 +31,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       ) {
         throw new Error("Invalid payload: Expected Position object");
       }
-      // console.log("Sending message")
+      console.log("Sending message");
       if (websocket && websocket.readyState === WebSocket.OPEN) {
         websocket.send(JSON.stringify({ type: "position", payload: payload }));
       }

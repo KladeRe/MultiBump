@@ -8,7 +8,7 @@ interface Position {
   dy: number;
 }
 
-const PING_INTERVAL = 30000;
+const PING_INTERVAL = 100000;
 
 const heartbeat = (client: WebSocket) => {
   (client as any).isAlive = true;
