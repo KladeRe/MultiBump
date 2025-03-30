@@ -8,14 +8,24 @@ interface Position {
   dy: number;
 }
 
+const PING_INTERVAL = 30000;
+
+const heartbeat = (client: WebSocket) => {
+  (client as any).isAlive = true;
+};
+
 interface RoomParticipants {
   [key: string]: Set<WebSocket>;
 }
 
 const rooms: RoomParticipants = {};
 
-wss.on("connection", (ws) => {
+wss.on("connection", (ws: WebSocket) => {
   let currentRoom: string | null = null;
+
+  (ws as any).isAlive = true;
+  ws.on("error", console.error);
+  ws.on("pong", heartbeat);
 
   ws.on("message", (message: string) => {
     try {
@@ -53,14 +63,17 @@ wss.on("connection", (ws) => {
         if (!rooms[room]) {
           rooms[room] = new Set();
         }
-        rooms[room].add(ws);
-        currentRoom = room;
-        if (rooms[room].size == 2) {
-          rooms[room].forEach((client) =>
-            client.send(JSON.stringify({ type: "allJoined", payload: room }))
-          );
-          return;
+        if (!rooms[room].has(ws)) {
+          rooms[room].add(ws);
+          currentRoom = room;
+          if (rooms[room].size == 2) {
+            rooms[room].forEach((client) =>
+              client.send(JSON.stringify({ type: "allJoined", payload: room }))
+            );
+            return;
+          }
         }
+
         ws.send(JSON.stringify({ type: "joined", payload: room }));
       }
     } catch (e) {
@@ -87,4 +100,27 @@ wss.on("connection", (ws) => {
       }
     }
   });
+});
+
+const interval = setInterval(() => {
+  wss.clients.forEach((ws) => {
+    if ((ws as any).isAlive === false) {
+      Object.keys(rooms).forEach((room) => {
+        if (rooms[room].has(ws)) {
+          rooms[room].delete(ws);
+          if (rooms[room].size === 0) {
+            delete rooms[room];
+          }
+        }
+      });
+      return ws.terminate();
+    }
+
+    (ws as any).isAlive = false;
+    ws.ping();
+  });
+}, PING_INTERVAL);
+
+wss.on("close", () => {
+  clearInterval(interval);
 });

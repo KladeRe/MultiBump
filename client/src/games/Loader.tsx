@@ -1,7 +1,6 @@
 import Spinner from "../util/Spinner";
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
-import { terminateSocketWorker } from "../util/workerUtil";
 import {
   connectToWebSocket,
   waitForOpponent,
@@ -12,12 +11,12 @@ const Loader = () => {
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room") || "NTc2MA-Mjc4MA";
 
+  const worker = useRef<Worker | null>(null);
+
   const handleLoginRedirect = () => {
-    terminateSocketWorker();
+    worker.current?.terminate();
     navigate("/login");
   };
-
-  const worker = useRef<Worker | null>(null);
 
   useEffect(() => {
     const redirectToFullRoom = () => {
