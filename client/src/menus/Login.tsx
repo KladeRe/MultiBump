@@ -17,7 +17,7 @@ const Login = () => {
 
   return (
     <div className="container">
-      <h1>Welcome to multiBump</h1>
+      <h1>MultiBump</h1>
       <input
         type="text"
         value={roomCode}

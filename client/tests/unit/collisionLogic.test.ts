@@ -1,4 +1,7 @@
-import { checkCollision, CollisionArea } from "../../gameLogic/collisionLogic";
+import {
+  checkCollision,
+  CollisionArea,
+} from "../../src/gameLogic/collisionLogic";
 
 const testCollisionArea: CollisionArea = {
   x: 100,

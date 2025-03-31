@@ -104,12 +104,10 @@
   content: "YES";
   left: 42px;
   background-color: #03a9f4;
-
 }
 
 #button-3 .checkbox:checked ~ .layer {
   background-color: #ebf7fc;
-
 }
 
 .color-picker {
@@ -125,4 +123,3 @@
   border: none;
   cursor: pointer;
 }
-
